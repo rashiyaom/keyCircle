@@ -10,7 +10,7 @@ const Navigation = () => {
         <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center">
           <Bike className="w-5 h-5 text-accent-foreground" />
         </div>
-        <span className="font-display text-xl font-semibold text-foreground">Chai Dew</span>
+        <span className="font-display text-xl font-semibold text-foreground">Chavi Deh</span>
       </div>
 
       {/* Navigation Pills */}

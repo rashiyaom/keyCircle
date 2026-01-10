@@ -1,5 +1,5 @@
 import { ArrowUpRight, Wallet, Shield, Clock, Star, TrendingUp, ChevronRight } from "lucide-react";
-import bikeHero from "@/assets/bike-hero.png";
+import bikeHero from "@/assets/68ad479faa0c4d1a27bb8441e611cbef.jpg";
 
 const ListYourBike = () => {
   const benefits = [
@@ -93,7 +93,7 @@ const ListYourBike = () => {
             </h2>
             
             <p className="font-body text-lg text-muted-foreground mb-10 max-w-md">
-              Join thousands of bike owners who are earning passive income by sharing their bikes with the Chai Dew community.
+              Join thousands of bike owners who are earning passive income by sharing their bikes with the Chavi Deh community.
             </p>
 
             {/* Benefits Grid */}

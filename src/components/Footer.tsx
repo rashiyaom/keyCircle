@@ -47,7 +47,7 @@ const Footer = () => {
                 <div className="w-12 h-12 rounded-2xl bg-accent flex items-center justify-center">
                   <Bike className="w-6 h-6 text-accent-foreground" />
                 </div>
-                <span className="font-display text-2xl font-semibold">Chai Dew</span>
+                <span className="font-display text-2xl font-semibold">Chavi Deh</span>
               </div>
               <p className="font-body text-sm text-primary-foreground/60 mb-6 max-w-xs leading-relaxed">
                 India's largest peer-to-peer bike rental platform. Rent bikes from your neighbors, or earn by sharing yours.
@@ -125,7 +125,7 @@ const Footer = () => {
           {/* Bottom */}
           <div className="pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="font-body text-sm text-primary-foreground/40">
-              © 2026 Chai Dew. All rights reserved.
+              © 2026 Chavi Deh. All rights reserved.
             </p>
             <div className="flex items-center gap-2">
               <span className="font-body text-sm text-primary-foreground/40">Made with</span>
