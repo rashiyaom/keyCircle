@@ -1,8 +1,10 @@
 import { useState } from "react";
-import { Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
   const navItems = ["Home", "Product", "About", "Pricing"];
 
   return (
@@ -28,10 +30,25 @@ const Navigation = () => {
 
       {/* Right Actions - Desktop: positioned separately over hero image */}
       {/* This is just a placeholder to maintain flex justify-between, actual buttons are in HeroSection */}
-      <div className="hidden md:block" />
+      <div className="hidden md:flex items-center gap-3">
+        <button 
+          onClick={() => navigate('/auth')}
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-accent-foreground font-body font-medium text-sm hover:bg-accent/90 transition-all duration-300 shadow-md hover:shadow-lg"
+        >
+          <LogIn className="w-4 h-4" />
+          Sign In
+        </button>
+      </div>
       
       {/* Tablet Actions */}
       <div className="flex sm:flex md:hidden items-center gap-2 sm:gap-3">
+        <button 
+          onClick={() => navigate('/auth')}
+          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent text-accent-foreground font-body font-medium text-xs hover:bg-accent/90 transition-all duration-300"
+        >
+          <LogIn className="w-3.5 h-3.5" />
+          Sign In
+        </button>
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300"
