@@ -1,5 +1,6 @@
-import { Star, ArrowUpRight, Heart, MapPin } from "lucide-react";
+import { Star, ArrowUpRight, Heart, MapPin, ChevronRight } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { useState } from "react";
 import vespaClassic from "@/assets/vespa-classic.png";
 import vespaRetro from "@/assets/vespa-retro.png";
 import vespaManual from "@/assets/vespa-manual.png";
@@ -7,6 +8,13 @@ import vespaManual from "@/assets/vespa-manual.png";
 const FeaturedBikes = () => {
   const headerAnim = useScrollAnimation();
   const cardsAnim = useScrollAnimation({ rootMargin: '0px 0px -50px 0px' });
+  const [likedBikes, setLikedBikes] = useState<number[]>([]);
+
+  const toggleLike = (id: number) => {
+    setLikedBikes(prev => 
+      prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]
+    );
+  };
 
   const bikes = [
     {
@@ -51,15 +59,111 @@ const FeaturedBikes = () => {
   ];
 
   return (
-    <section className="px-4 sm:px-8 py-12 sm:py-28 relative overflow-hidden">
+    <section className="px-4 sm:px-8 py-8 sm:py-28 relative overflow-hidden">
       {/* Background decorations */}
       <div className="absolute top-20 right-0 w-96 h-96 rounded-full bg-accent/5 blur-3xl pointer-events-none" />
       
       <div className="max-w-6xl mx-auto relative">
-        {/* Section Header */}
+        {/* Mobile Header - Compact */}
+        <div className="sm:hidden flex items-center justify-between mb-4">
+          <div>
+            <div className="flex items-center gap-1.5 mb-1">
+              <Star className="w-3 h-3 text-accent fill-accent" />
+              <span className="font-body text-[10px] font-medium text-muted-foreground uppercase tracking-wider">Top Rated</span>
+            </div>
+            <h2 className="font-display text-xl font-semibold text-foreground">
+              Popular Rides
+            </h2>
+          </div>
+          <button className="flex items-center gap-1 text-accent font-body text-xs font-medium">
+            View All
+            <ChevronRight className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Mobile: Horizontal Scroll Cards */}
+        <div className="sm:hidden -mx-4 px-4">
+          <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide snap-x snap-mandatory">
+            {bikes.map((bike) => (
+              <div
+                key={bike.id}
+                className="flex-shrink-0 w-[260px] snap-start bg-card rounded-2xl overflow-hidden shadow-sm border border-border/30"
+              >
+                {/* Compact Image */}
+                <div className="relative h-32 overflow-hidden">
+                  <img
+                    src={bike.image}
+                    alt={bike.name}
+                    className="w-full h-full object-cover"
+                  />
+                  
+                  {/* Top Row - Type & Like */}
+                  <div className="absolute top-2 left-2 right-2 flex items-center justify-between">
+                    <span className={`px-2 py-0.5 rounded-full text-[9px] font-body font-medium ${
+                      bike.available 
+                        ? "bg-emerald-500/90 text-white" 
+                        : "bg-stone-500/90 text-white"
+                    }`}>
+                      {bike.available ? "Available" : "Booked"}
+                    </span>
+                    <button 
+                      onClick={() => toggleLike(bike.id)}
+                      className="w-7 h-7 rounded-full bg-white/90 backdrop-blur-sm flex items-center justify-center"
+                    >
+                      <Heart className={`w-3.5 h-3.5 transition-colors ${
+                        likedBikes.includes(bike.id) 
+                          ? "fill-red-500 text-red-500" 
+                          : "text-stone-600"
+                      }`} />
+                    </button>
+                  </div>
+
+                  {/* Owner Badge - Bottom */}
+                  <div className="absolute bottom-2 left-2 flex items-center gap-1.5 px-2 py-1 rounded-full bg-white/90 backdrop-blur-sm">
+                    <img src={bike.ownerImage} alt={bike.owner} className="w-4 h-4 rounded-full object-cover" />
+                    <span className="font-body text-[9px] font-medium text-stone-700">{bike.owner}</span>
+                  </div>
+                </div>
+
+                {/* Compact Content */}
+                <div className="p-3">
+                  {/* Name & Rating Row */}
+                  <div className="flex items-start justify-between gap-2 mb-2">
+                    <h3 className="font-display text-sm font-medium text-foreground leading-tight">
+                      {bike.name}
+                    </h3>
+                    <div className="flex items-center gap-0.5 flex-shrink-0">
+                      <Star className="w-3 h-3 fill-accent text-accent" />
+                      <span className="font-body text-[11px] font-semibold text-foreground">{bike.rating}</span>
+                    </div>
+                  </div>
+
+                  {/* Location */}
+                  <div className="flex items-center gap-1 text-muted-foreground mb-3">
+                    <MapPin className="w-2.5 h-2.5" />
+                    <span className="font-body text-[10px]">{bike.location}</span>
+                  </div>
+
+                  {/* Price & CTA */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-baseline gap-0.5">
+                      <span className="font-display text-lg font-semibold text-foreground">₹{bike.price}</span>
+                      <span className="font-body text-[10px] text-muted-foreground">/day</span>
+                    </div>
+                    <button className="px-3 py-1.5 rounded-full bg-accent text-accent-foreground font-body text-[10px] font-medium">
+                      Book
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop/Tablet Header */}
         <div 
           ref={headerAnim.ref}
-          className={`flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6 mb-8 sm:mb-16 transition-all duration-700 ease-out ${
+          className={`hidden sm:flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6 mb-8 sm:mb-16 transition-all duration-700 ease-out ${
             headerAnim.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'
           }`}
         >
@@ -79,10 +183,10 @@ const FeaturedBikes = () => {
           </button>
         </div>
 
-        {/* Bikes Grid */}
+        {/* Desktop/Tablet Grid */}
         <div 
           ref={cardsAnim.ref}
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
+          className="hidden sm:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"
         >
           {bikes.map((bike, index) => (
             <div

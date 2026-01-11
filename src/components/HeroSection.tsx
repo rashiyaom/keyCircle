@@ -1,9 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import bikeHero from "@/assets/68ad479faa0c4d1a27bb8441e611cbef.jpg";
-import vespaClassic from "@/assets/vespa-classic.png";
-import vespaRetro from "@/assets/vespa-retro.png";
-import vespaManual from "@/assets/vespa-manual.png";
 
 // Custom hook for scroll animations
 const useScrollAnimation = () => {
@@ -34,43 +31,122 @@ const HeroSection = () => {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
+  const [displayedCards, setDisplayedCards] = useState([0, 1, 2]);
+  const [isScrolled, setIsScrolled] = useState(false);
   
   // Scroll animations
   const titleAnim = useScrollAnimation();
   const imageAnim = useScrollAnimation();
   const sliderAnim = useScrollAnimation();
 
-  // Auto-rotate categories
+  // Track scroll position for navbar transformation
   useEffect(() => {
-    if (isHovered || !isPlaying) return;
-    const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev === 2 ? 0 : prev + 1));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, [isHovered, isPlaying]);
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
+  const mobileNavItems = ["Home", "Product", "About", "Pricing"];
+
+  // 15 categories with web images
   const categories = [
     { 
       name: "Classic", 
-      image: vespaClassic,
+      image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&h=400&fit=crop",
       heroImage: bikeHero,
-      tags: ["Vespa", "Matic", "Retro", "Elegant", "Energy", "Speed"]
     },
     { 
       name: "Retro", 
-      image: vespaRetro,
-      heroImage: vespaRetro,
-      tags: ["Retro", "Vintage", "Cool", "Stylish", "Unique", "Bold"]
+      image: "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1571008887538-b36bb32f4571?w=1200&h=800&fit=crop",
     },
     { 
       name: "Manual", 
-      image: vespaManual,
-      heroImage: vespaManual,
-      tags: ["Manual", "Control", "Power", "Sporty", "Dynamic", "Free"]
+      image: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1609630875171-b1321377ee65?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Sport", 
+      image: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1568772585407-9361f9bf3a87?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Cruiser", 
+      image: "https://images.unsplash.com/photo-1558980664-769d59546b3d?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558980664-769d59546b3d?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Electric", 
+      image: "https://images.unsplash.com/photo-1620287341401-e558ec419496?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1620287341401-e558ec419496?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Vintage", 
+      image: "https://images.unsplash.com/photo-1525160354320-d8e92641c563?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1525160354320-d8e92641c563?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Urban", 
+      image: "https://images.unsplash.com/photo-1596738320732-8e57a513e64f?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1596738320732-8e57a513e64f?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Adventure", 
+      image: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558981403-c5f9899a28bc?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Touring", 
+      image: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1591637333184-19aa84b3e01f?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Cafe", 
+      image: "https://images.unsplash.com/photo-1558980664-2506fca6bfc2?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558980664-2506fca6bfc2?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Scrambler", 
+      image: "https://images.unsplash.com/photo-1558981852-426c6c22a060?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558981852-426c6c22a060?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Naked", 
+      image: "https://images.unsplash.com/photo-1558980664-ce6960be307d?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558980664-ce6960be307d?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Chopper", 
+      image: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558981806-ec527fa84c39?w=1200&h=800&fit=crop",
+    },
+    { 
+      name: "Bobber", 
+      image: "https://images.unsplash.com/photo-1558980664-1db506751c6c?w=400&h=400&fit=crop",
+      heroImage: "https://images.unsplash.com/photo-1558980664-1db506751c6c?w=1200&h=800&fit=crop",
     },
   ];
 
   const currentCategory = categories[activeIndex];
+
+  // Update displayed cards when active index changes
+  useEffect(() => {
+    const total = categories.length;
+    const prev = (activeIndex - 1 + total) % total;
+    const next = (activeIndex + 1) % total;
+    setDisplayedCards([prev, activeIndex, next]);
+  }, [activeIndex, categories.length]);
+
+  // Auto-rotate categories
+  useEffect(() => {
+    if (isHovered || !isPlaying) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev === categories.length - 1 ? 0 : prev + 1));
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [isHovered, isPlaying, categories.length]);
 
   const handlePrev = () => {
     setActiveIndex((prev) => (prev === 0 ? categories.length - 1 : prev - 1));
@@ -85,10 +161,151 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="relative overflow-hidden px-4 sm:px-6 lg:px-0 pt-4 sm:pt-6">
+    <section className="relative overflow-hidden px-4 sm:px-6 lg:px-0 pt-16 sm:pt-6 lg:pb-6">
+      {/* Mobile Navbar - Transforms from sticky to floating glassmorphism on scroll */}
+      <div className={`sm:hidden fixed z-50 transition-all duration-500 ease-out ${
+        isScrolled 
+          ? 'top-3 left-3 right-3 bg-white/70 backdrop-blur-xl shadow-lg shadow-black/10 border border-white/60 rounded-2xl px-4 py-2.5' 
+          : 'top-0 left-0 right-0 bg-background/95 backdrop-blur-sm shadow-sm border-b border-stone-100 px-4 py-3'
+      }`}>
+        <div className="flex items-center justify-between">
+          {/* Logo - Left side */}
+          <span className="font-display text-base font-semibold text-foreground">keyCircle</span>
+          
+          {/* Navigation Pills - Center */}
+          <div className={`flex items-center gap-0.5 rounded-full p-1 transition-all duration-500 ${
+            isScrolled 
+              ? 'bg-white/50 backdrop-blur-sm shadow-inner border border-white/40' 
+              : 'bg-stone-200 shadow-sm'
+          }`}>
+            {mobileNavItems.map((item, index) => (
+              <button
+                key={item}
+                className={`px-2.5 py-1.5 rounded-full text-[10px] font-medium font-body transition-all duration-300 ${
+                  index === 0
+                    ? "bg-stone-800 text-white"
+                    : "text-stone-700 hover:bg-stone-300/50"
+                }`}
+              >
+                {item}
+              </button>
+            ))}
+          </div>
+
+          {/* Cart - Right side */}
+          <button className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center active:scale-95 transition-transform">
+            <ShoppingCart className="w-3.5 h-3.5 text-white" />
+          </button>
+        </div>
+      </div>
+
+      {/* Desktop Bottom Panel - Description + Cards in same container */}
+      <div className="hidden lg:flex absolute bottom-[10%] left-8 right-16 z-40">
+        {/* Single Container for Description + Cards + Count/Arrows - Blends with website background */}
+        <div className="bg-background rounded-[24px] p-5 flex items-center gap-10 w-full">
+          {/* Description Text - Inside container on the left */}
+          <div className="flex items-start gap-2.5 max-w-[180px] border-r border-stone-300/50 pr-8">
+            <div className="w-2.5 h-2.5 bg-[#a3b87c] rounded-sm mt-1 flex-shrink-0" />
+            <p className="text-[11px] font-body text-stone-800 uppercase leading-[1.7] tracking-wide font-semibold">
+              VESPA MATIC IS AN ENVIRONMENTALLY FRIENDLY CHOICE WITH AN ENGINE THAT IS EFFICIENT IN FUEL CONSUMPTION.
+            </p>
+          </div>
+
+          {/* Interactive Middle Element - Fills the gap */}
+          <div className="flex flex-col items-center justify-center gap-3 px-6">
+            {/* Rotating ring with play button */}
+            <div className="relative">
+              <div className="w-16 h-16 rounded-full border-2 border-dashed border-stone-300/60 animate-spin-slow" />
+              <button 
+                onClick={togglePlay}
+                className="absolute inset-0 m-auto w-10 h-10 rounded-full bg-stone-800 hover:bg-stone-900 flex items-center justify-center transition-all duration-200 shadow-lg hover:scale-105"
+              >
+                {isPlaying ? (
+                  <div className="flex gap-1">
+                    <div className="w-0.5 h-3 bg-white rounded-full" />
+                    <div className="w-0.5 h-3 bg-white rounded-full" />
+                  </div>
+                ) : (
+                  <div className="w-0 h-0 border-l-[8px] border-l-white border-y-[5px] border-y-transparent ml-1" />
+                )}
+              </button>
+            </div>
+            {/* Label */}
+            <span className="text-[9px] font-body text-stone-500 uppercase tracking-widest">Auto Play</span>
+          </div>
+          
+          {/* Cards + Count/Arrows Section - Wider to cut into hero image */}
+          <div>
+            {/* Cards Row - Shows 3 cards that cycle through 15 categories */}
+            <div className="flex items-center gap-5">
+              {displayedCards.map((cardIndex, i) => (
+                <button
+                  key={`card-${cardIndex}-${i}`}
+                  onClick={() => setActiveIndex(cardIndex)}
+                  className="relative group"
+                >
+                  {/* Card - Perfect square with smooth transition */}
+                  <div className={`relative w-[115px] h-[115px] rounded-2xl overflow-hidden transition-all duration-500 ease-out ${
+                    cardIndex === activeIndex 
+                      ? 'ring-[3px] ring-[#c9b896] scale-100' 
+                      : 'ring-1 ring-stone-200/60 opacity-70 hover:opacity-100 scale-95'
+                  }`}>
+                    {/* Small icon top-right */}
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white/90 flex items-center justify-center z-10">
+                      <ArrowUpRight className="w-2.5 h-2.5 text-stone-600" />
+                    </div>
+                    <img 
+                      src={categories[cardIndex].image} 
+                      alt={categories[cardIndex].name}
+                      className="w-full h-full object-cover transition-transform duration-500"
+                    />
+                    {/* Label at bottom-center of card with background pill - BIGGER */}
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
+                      <span className={`px-4 py-1.5 rounded-full text-[11px] font-body tracking-wide backdrop-blur-md transition-all whitespace-nowrap ${
+                        cardIndex === activeIndex 
+                          ? 'bg-white text-stone-900 font-bold shadow-md' 
+                          : 'bg-white/90 text-stone-700 font-semibold'
+                      }`}>
+                        {categories[cardIndex].name}
+                      </span>
+                    </div>
+                  </div>
+                </button>
+              ))}
+            </div>
+            
+            {/* Count + Arrows Row */}
+            <div className="flex items-center justify-between mt-3">
+              {/* Count Display */}
+              <div className="flex items-baseline">
+                <span className="text-xl font-body font-medium text-foreground">{activeIndex + 1}</span>
+                <span className="text-base text-stone-400 font-light">/</span>
+                <span className="text-sm text-stone-400 font-body">15</span>
+              </div>
+              
+              {/* Simple Arrow Buttons */}
+              <div className="flex items-center gap-3">
+                <button 
+                  onClick={handlePrev}
+                  className="text-stone-500 hover:text-foreground transition-colors"
+                >
+                  <span className="text-lg">←</span>
+                </button>
+                <button 
+                  onClick={handleNext}
+                  className="text-stone-500 hover:text-foreground transition-colors"
+                >
+                  <span className="text-lg">→</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
-        {/* Left Column */}
-        <div className="lg:col-span-5 flex flex-col justify-between px-0 sm:px-0 lg:px-8 py-2 sm:py-4 lg:py-6 pt-16 lg:pt-20 relative">
+        {/* Left Column - Title and Controls */}
+        <div className="lg:col-span-5 flex flex-col justify-between px-0 sm:px-0 lg:px-8 py-2 sm:py-4 lg:py-6 pt-4 sm:pt-16 lg:pt-20 relative order-2 sm:order-first lg:order-first">
           {/* Hero Title */}
           <div 
             ref={titleAnim.ref}
@@ -98,18 +315,94 @@ const HeroSection = () => {
                 : 'opacity-0 translate-y-8'
             }`}
           >
-            <h1 className="font-display text-3xl sm:text-5xl lg:text-6xl xl:text-7xl font-normal leading-[1.05] tracking-tight text-foreground">
+            {/* Mobile: Title + Cards side by side */}
+            <div className="sm:hidden flex items-start gap-4">
+              {/* Title - Left side */}
+              <div className="flex-1">
+                <h1 className="font-display text-[28px] font-normal leading-[1.1] tracking-tight text-foreground">
+                  Feel True
+                  <span className="inline-flex items-center mx-1 align-middle">
+                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-foreground/5 border border-foreground/10">
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                      <span className="font-body text-[9px] font-medium text-muted-foreground">2.4k+</span>
+                    </span>
+                  </span>
+                  <br />
+                  Comfort
+                  <br />
+                  With
+                  <br />
+                  keyCircle
+                </h1>
+              </div>
+
+              {/* Horizontal Cards - Right side */}
+              <div className="flex-1 flex flex-col items-center">
+                {/* Cards Row */}
+                <div className="flex gap-2 items-center">
+                  {displayedCards.map((cardIndex) => (
+                    <button
+                      key={`mobile-compact-${cardIndex}`}
+                      onClick={() => setActiveIndex(cardIndex)}
+                      className="relative flex-shrink-0"
+                    >
+                      <div className={`relative overflow-hidden transition-all duration-300 shadow-lg ${
+                        cardIndex === activeIndex 
+                          ? 'w-[58px] h-[58px] rounded-xl ring-2 ring-[#c9b896] ring-offset-1 ring-offset-background' 
+                          : 'w-[46px] h-[46px] rounded-lg opacity-55'
+                      }`}>
+                        <img 
+                          src={categories[cardIndex].image} 
+                          alt={categories[cardIndex].name}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />
+                      </div>
+                      {cardIndex === activeIndex && (
+                        <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-stone-800 text-[6px] font-body font-semibold text-white whitespace-nowrap shadow-sm">
+                          {categories[cardIndex].name}
+                        </span>
+                      )}
+                    </button>
+                  ))}
+                </div>
+                
+                {/* Controls - centered below cards */}
+                <div className="flex items-center justify-center gap-3 mt-5">
+                  <button 
+                    onClick={handlePrev}
+                    className="p-1 active:scale-90 transition-transform"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-stone-500" />
+                  </button>
+                  <div className="flex items-center gap-0.5">
+                    <span className="text-[10px] font-body font-semibold text-stone-800">{String(activeIndex + 1).padStart(2, '0')}</span>
+                    <span className="text-[9px] text-stone-400">/</span>
+                    <span className="text-[9px] font-body text-stone-400">{categories.length}</span>
+                  </div>
+                  <button 
+                    onClick={handleNext}
+                    className="p-1 active:scale-90 transition-transform"
+                  >
+                    <ChevronRight className="w-4 h-4 text-stone-500" />
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            {/* Tablet & Desktop Title */}
+            <h1 className="hidden sm:block font-display text-5xl lg:text-6xl xl:text-7xl font-normal leading-[1.05] tracking-tight text-foreground">
               Feel True
-              <span className="inline-flex items-center mx-1.5 sm:mx-2 align-middle">
-                <span className="flex items-center gap-1 px-2 sm:px-3 py-1 sm:py-1.5 rounded-full bg-foreground/5 border border-foreground/10">
-                  <span className="w-1.5 h-1.5 sm:w-2 sm:h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-body text-[10px] sm:text-xs font-medium text-muted-foreground">2.4k+</span>
+              <span className="inline-flex items-center mx-2 align-middle">
+                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <span className="font-body text-xs font-medium text-muted-foreground">2.4k+</span>
                 </span>
               </span>
               <br />
               Comfort With
               <br />
-              Chaavi Deh -
+              keyCircle -
               <br />
               Follow Elegant
             </h1>
@@ -135,82 +428,49 @@ const HeroSection = () => {
           >
             {/* Description and Interactive Element Row */}
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 lg:gap-8">
-              {/* Description Text - Shown on tablet and hidden on mobile */}
+              {/* Description Text - Shown on tablet only (desktop is in the absolute panel) */}
               <div className="hidden sm:block lg:hidden flex-shrink-0 max-w-[140px]">
                 <div className="flex items-start gap-2">
                   <div className="w-2 h-2 bg-[#a3b87c] rounded-sm mt-1.5 flex-shrink-0" />
                   <p className="text-[10px] font-body text-muted-foreground uppercase leading-relaxed tracking-wide">
-                    CHAAVI DEH IS YOUR TRUSTED PLATFORM FOR STUDENT VEHICLE SHARING.
+                    KEYCIRCLE IS YOUR TRUSTED PLATFORM FOR STUDENT VEHICLE SHARING.
                   </p>
-                </div>
-              </div>
-              
-              {/* Desktop Description - Bottom of left column */}
-              <div className="hidden lg:block flex-shrink-0 max-w-[160px] absolute bottom-8 left-8">
-                <div className="flex items-start gap-2.5">
-                  <div className="w-2.5 h-2.5 bg-[#a3b87c] rounded-sm mt-1 flex-shrink-0" />
-                  <p className="text-[10px] font-body text-muted-foreground uppercase leading-[1.7] tracking-wide">
-                    VESPA MATIC IS AN ENVIRONMENTALLY FRIENDLY CHOICE WITH AN ENGINE THAT IS EFFICIENT IN FUEL CONSUMPTION.
-                  </p>
-                </div>
-                
-                {/* Pagination below description */}
-                <div className="flex items-center gap-4 mt-4">
-                  <div className="font-body text-lg">
-                    <span className="font-semibold text-foreground">{activeIndex + 1}</span>
-                    <span className="text-muted-foreground/40">/</span>
-                    <span className="text-muted-foreground/40 text-sm">15</span>
-                  </div>
-                  <div className="flex gap-2">
-                    <button 
-                      onClick={handlePrev}
-                      className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
-                    >
-                      <ChevronLeft className="w-4 h-4" />
-                    </button>
-                    <button 
-                      onClick={handleNext}
-                      className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
-                    >
-                      <ChevronRight className="w-4 h-4" />
-                    </button>
-                  </div>
                 </div>
               </div>
 
-              {/* Category Thumbnails with Slider - Hidden on desktop (shown on image instead) */}
+              {/* Category Thumbnails with Slider - Hidden on desktop and mobile (shown on image instead) */}
               <div 
-                className="relative flex-1 lg:hidden"
+                className="relative flex-1 hidden sm:block lg:hidden"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
-                {/* Desktop Layout - Clean minimal thumbnails */}
-                <div className="hidden sm:flex items-center gap-2">
-                  {categories.map((category, index) => (
+                {/* Tablet Layout - Clean minimal thumbnails */}
+                <div className="flex items-center gap-2">
+                  {displayedCards.map((cardIndex) => (
                     <button
-                      key={category.name}
-                      onClick={() => setActiveIndex(index)}
+                      key={`tablet-${cardIndex}`}
+                      onClick={() => setActiveIndex(cardIndex)}
                       className="relative group"
                     >
                       <div className={`relative w-16 h-20 rounded-lg overflow-hidden transition-all duration-300 ease-out ${
-                        activeIndex === index 
+                        cardIndex === activeIndex 
                           ? 'ring-2 ring-foreground/20 ring-offset-2' 
                           : 'opacity-50 hover:opacity-80'
                       }`}>
                         <img 
-                          src={category.image} 
-                          alt={category.name}
+                          src={categories[cardIndex].image} 
+                          alt={categories[cardIndex].name}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                         <span className="absolute bottom-1 left-1/2 -translate-x-1/2 text-[9px] font-body font-medium text-white/90">
-                          {category.name}
+                          {categories[cardIndex].name}
                         </span>
                       </div>
                     </button>
                   ))}
                   
-                  {/* Play/Pause Button - Desktop */}
+                  {/* Play/Pause Button - Tablet */}
                   <button 
                     onClick={togglePlay}
                     className="ml-2 w-8 h-8 rounded-full bg-foreground/10 hover:bg-foreground hover:text-background flex items-center justify-center transition-all duration-200"
@@ -224,64 +484,6 @@ const HeroSection = () => {
                       <div className="w-0 h-0 border-l-[6px] border-l-current border-y-[4px] border-y-transparent ml-0.5" />
                     )}
                   </button>
-                </div>
-
-                {/* Mobile Layout - Compact and clean */}
-                <div className="sm:hidden">
-                  {/* Top row: Thumbnails */}
-                  <div className="flex items-center justify-center gap-2 mb-3">
-                    {categories.map((category, index) => (
-                      <button
-                        key={category.name}
-                        onClick={() => setActiveIndex(index)}
-                        className="relative"
-                      >
-                        <div className={`w-12 h-12 rounded-lg overflow-hidden transition-all duration-200 ${
-                          activeIndex === index 
-                            ? 'ring-2 ring-foreground/20' 
-                            : 'opacity-40'
-                        }`}>
-                          <img 
-                            src={category.image} 
-                            alt={category.name}
-                            className="w-full h-full object-cover"
-                          />
-                        </div>
-                      </button>
-                    ))}
-                    
-                    {/* Play Button - Mobile */}
-                    <button 
-                      onClick={togglePlay}
-                      className="w-8 h-8 rounded-full bg-foreground flex items-center justify-center ml-1"
-                    >
-                      {isPlaying ? (
-                        <div className="flex gap-0.5">
-                          <div className="w-0.5 h-2 bg-background rounded-full" />
-                          <div className="w-0.5 h-2 bg-background rounded-full" />
-                        </div>
-                      ) : (
-                        <div className="w-0 h-0 border-l-[5px] border-l-background border-y-[3px] border-y-transparent ml-0.5" />
-                      )}
-                    </button>
-                  </div>
-                  
-                  {/* Bottom row: Category names in 2-column grid */}
-                  <div className="grid grid-cols-3 gap-1.5">
-                    {categories.map((category, index) => (
-                      <button
-                        key={`btn-${category.name}`}
-                        onClick={() => setActiveIndex(index)}
-                        className={`py-1.5 px-2 rounded-lg text-[10px] font-body font-medium transition-all duration-200 ${
-                          activeIndex === index 
-                            ? 'bg-foreground text-background' 
-                            : 'bg-foreground/5 text-foreground/60'
-                        }`}
-                      >
-                        {category.name}
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
             </div>
@@ -320,68 +522,32 @@ const HeroSection = () => {
         {/* Right Column - Hero Image */}
         <div 
           ref={imageAnim.ref}
-          className={`lg:col-span-7 relative order-first lg:order-last transition-all duration-1000 delay-200 ease-out pr-0 lg:pr-6 ${
+          className={`lg:col-span-7 relative order-1 sm:order-last lg:order-last transition-all duration-1000 delay-200 ease-out pr-0 lg:pr-6 mt-2 sm:mt-0 ${
             imageAnim.isVisible 
               ? 'opacity-100 translate-x-0 scale-100' 
               : 'opacity-0 translate-x-8 scale-95'
           }`}
         >
           {/* Contact/Cart section - positioned at top right corner of image */}
-          <div className="hidden lg:flex absolute top-0 right-6 z-30 items-center gap-2 bg-[#fafaf9] rounded-bl-[20px] pl-4 pb-3 pt-1 pr-1">
+          <div className="hidden lg:flex absolute top-0 right-6 z-30 items-center gap-2 bg-background rounded-bl-[28px] pl-5 pb-4 pt-1 pr-1">
             <button className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity">
               <ShoppingCart className="w-4 h-4" />
             </button>
-            <button className="px-5 py-2.5 rounded-full bg-card text-foreground font-medium font-body text-sm hover:bg-secondary transition-colors border border-border">
+            <button className="px-5 py-2.5 rounded-full bg-background text-foreground font-medium font-body text-sm hover:bg-secondary transition-colors border border-border">
               CONTACT US
             </button>
           </div>
           
-          {/* Category Cards Panel - Cuts into hero image from left */}
-          <div className="hidden lg:block absolute bottom-6 left-0 z-30 bg-[#fafaf9] rounded-tr-[28px] pt-5 pr-5 pb-5 pl-0">
-            <div className="flex items-end gap-3 pl-4">
-              {categories.map((category, index) => (
-                <button
-                  key={category.name}
-                  onClick={() => setActiveIndex(index)}
-                  className="relative group"
-                >
-                  {/* Card with golden/tan border when active */}
-                  <div className={`relative w-[95px] h-[115px] rounded-2xl overflow-hidden transition-all duration-300 ${
-                    activeIndex === index 
-                      ? 'ring-[3px] ring-[#c9b896]' 
-                      : 'ring-1 ring-stone-200 opacity-80 hover:opacity-100'
-                  }`}>
-                    {/* Small icon top-right */}
-                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white/70 flex items-center justify-center z-10">
-                      <ArrowUpRight className="w-2.5 h-2.5 text-stone-500" />
-                    </div>
-                    <img 
-                      src={category.image} 
-                      alt={category.name}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  {/* Label below card */}
-                  <span className={`block mt-2 text-center text-sm font-body transition-colors ${
-                    activeIndex === index ? 'text-foreground font-medium' : 'text-muted-foreground'
-                  }`}>
-                    {category.name}
-                  </span>
-                </button>
-              ))}
-            </div>
-          </div>
-          
-          <div className="relative h-[280px] xs:h-[340px] sm:h-[480px] lg:h-[calc(100vh-48px)] rounded-2xl sm:rounded-3xl lg:rounded-tr-none overflow-hidden shadow-xl">
-            {/* Main Hero Image */}
+          <div className="relative h-[280px] xs:h-[340px] sm:h-[480px] lg:h-[calc(100vh-48px)] rounded-2xl sm:rounded-3xl lg:rounded-tr-none lg:rounded-bl-[40px] overflow-hidden shadow-xl">
+            {/* Main Hero Image - Simple fade transition */}
             <img
               key={activeIndex}
               src={currentCategory.heroImage}
-              alt={`Chaavi Deh - ${currentCategory.name}`}
-              className="w-full h-full object-cover object-center animate-fade-in"
+              alt={`keyCircle - ${currentCategory.name}`}
+              className="w-full h-full object-cover object-center transition-opacity duration-300"
             />
 
-            {/* Chaavi Deh Badge - Circular Text */}
+            {/* keyCircle Badge - Circular Text */}
             <div className="absolute top-3 sm:top-5 left-3 sm:left-5 z-20">
               <div className="relative w-20 h-20 sm:w-24 sm:h-24">
                 <svg 
@@ -401,7 +567,7 @@ const HeroSection = () => {
                     fill="currentColor"
                   >
                     <textPath href="#circlePath" startOffset="0%">
-                      CHAAVI DEH • CHAAVI DEH • CHAAVI DEH • CHAAVI DEH •
+                      KEYCIRCLE • KEYCIRCLE • KEYCIRCLE • KEYCIRCLE •
                     </textPath>
                   </text>
                 </svg>
@@ -413,10 +579,10 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Tags - Compact minimal pills */}
+            {/* Tags - Dynamic based on current category */}
             <div className="absolute bottom-2 sm:bottom-4 right-2 sm:right-4 z-20">
               <div className="flex flex-wrap gap-1 sm:gap-1.5 justify-end max-w-[120px] sm:max-w-[160px]">
-                {currentCategory.tags.slice(0, 4).map((tag) => (
+                {['Style', currentCategory.name, 'Premium', 'Ride'].map((tag) => (
                   <span
                     key={`${activeIndex}-${tag}`}
                     className="px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full bg-white/80 text-[8px] sm:text-[10px] font-body font-medium text-stone-600"
@@ -425,6 +591,40 @@ const HeroSection = () => {
                   </span>
                 ))}
               </div>
+            </div>
+
+            {/* Intricate Bottom Decorative Line */}
+            <div className="hidden lg:block absolute bottom-0 left-0 right-0 z-10">
+              {/* Decorative pattern line */}
+              <div className="flex items-end justify-between px-6 pb-4">
+                {/* Left decorative elements */}
+                <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white/40 text-[10px] font-body tracking-[0.3em]">+ + +</span>
+                  </div>
+                  <div className="w-16 h-[1px] bg-gradient-to-r from-white/30 to-transparent" />
+                </div>
+
+                {/* Center decorative pattern */}
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-[1px] bg-white/20" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-white/30" />
+                  <div className="w-8 h-[1px] bg-white/20" />
+                </div>
+
+                {/* Right decorative elements */}
+                <div className="flex items-center gap-3">
+                  <div className="w-16 h-[1px] bg-gradient-to-l from-white/30 to-transparent" />
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-white/40 text-[10px] font-body tracking-[0.3em]">+ + +</span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Subtle bottom gradient overlay */}
+              <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/20 via-transparent to-transparent pointer-events-none" />
             </div>
           </div>
         </div>

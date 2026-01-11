@@ -6,7 +6,7 @@ const Navigation = () => {
   const navItems = ["Home", "Product", "About", "Pricing"];
 
   return (
-    <nav className="relative flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6">
+    <nav className="relative hidden sm:flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6">
       {/* Navigation Pills - Desktop (moved to left, replaces logo) */}
       <div className="hidden md:flex items-center gap-1 rounded-full bg-stone-200 p-1.5 shadow-nav">
         {navItems.map((item, index) => (
@@ -23,15 +23,15 @@ const Navigation = () => {
         ))}
       </div>
 
-      {/* Mobile Logo (only show on mobile) */}
-      <span className="md:hidden font-display text-lg font-semibold text-foreground">Chaavi Deh</span>
+      {/* Tablet Logo (only show on tablet) */}
+      <span className="hidden sm:block md:hidden font-display text-lg font-semibold text-foreground">keyCircle</span>
 
       {/* Right Actions - Desktop: positioned separately over hero image */}
       {/* This is just a placeholder to maintain flex justify-between, actual buttons are in HeroSection */}
       <div className="hidden md:block" />
       
-      {/* Mobile Actions */}
-      <div className="flex md:hidden items-center gap-2 sm:gap-3">
+      {/* Tablet Actions */}
+      <div className="flex sm:flex md:hidden items-center gap-2 sm:gap-3">
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
           className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300"
@@ -44,8 +44,8 @@ const Navigation = () => {
         </button>
       </div>
 
-      {/* Mobile Menu */}
-      <div className={`absolute top-full left-0 right-0 z-50 md:hidden transition-all duration-300 ease-out ${
+      {/* Tablet Menu */}
+      <div className={`absolute top-full left-0 right-0 z-50 sm:block md:hidden transition-all duration-300 ease-out ${
         isMenuOpen ? 'opacity-100 translate-y-0' : 'opacity-0 -translate-y-4 pointer-events-none'
       }`}>
         <div className="mx-4 mt-2 p-4 rounded-2xl bg-card/95 backdrop-blur-xl border border-border/50 shadow-xl">

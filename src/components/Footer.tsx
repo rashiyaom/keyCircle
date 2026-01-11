@@ -61,7 +61,7 @@ const Footer = () => {
                 <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-accent flex items-center justify-center">
                   <Bike className="w-5 h-5 sm:w-6 sm:h-6 text-accent-foreground" />
                 </div>
-                <span className="font-display text-xl sm:text-2xl font-semibold">Chaavi Deh</span>
+                <span className="font-display text-xl sm:text-2xl font-semibold">keyCircle</span>
               </div>
               <p className="font-body text-xs sm:text-sm text-primary-foreground/60 mb-4 sm:mb-6 max-w-xs leading-relaxed">
                 A student community vehicle sharing platform. Turn unused keys into shared freedom.
@@ -139,7 +139,7 @@ const Footer = () => {
           {/* Bottom */}
           <div className="pt-6 sm:pt-8 border-t border-primary-foreground/10 flex flex-col sm:flex-row justify-between items-center gap-3 sm:gap-4">
             <p className="font-body text-[10px] sm:text-sm text-primary-foreground/40">
-              © 2026 Chaavi Deh. All rights reserved.
+              © 2026 keyCircle. All rights reserved.
             </p>
             <div className="flex items-center gap-2">
               <span className="font-body text-sm text-primary-foreground/40">Made with</span>

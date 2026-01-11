@@ -1,8 +1,8 @@
-# Chaavi Deh - Student Vehicle Sharing Platform
+# keyCircle - Student Vehicle Sharing Platform
 
 A community-driven vehicle sharing platform built for hostel and student neighborhoods, where mobility is often limited but trust matters most. Verified students can securely list their bikes, scooties, or cycles, while others can rent them for short durations at transparent hourly rates.
 
-**"Chaavi Deh" means "Give the Key"** — unlocking movement, responsibility, and mutual trust within everyday hostel life.
+**"keyCircle"** — unlocking movement, responsibility, and mutual trust within everyday hostel life.
 
 ## Tech Stack
 
