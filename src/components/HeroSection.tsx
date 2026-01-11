@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, ShoppingCart, LogIn } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import bikeHero from "@/assets/68ad479faa0c4d1a27bb8441e611cbef.jpg";
 
 // Custom hook for scroll animations
@@ -28,6 +29,7 @@ const useScrollAnimation = () => {
 };
 
 const HeroSection = () => {
+  const navigate = useNavigate();
   const [activeIndex, setActiveIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const [isPlaying, setIsPlaying] = useState(true);
@@ -162,15 +164,14 @@ const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden px-4 sm:px-6 lg:px-0 pt-16 sm:pt-6 lg:pb-6">
-      {/* Mobile Navbar - Transforms from sticky to floating glassmorphism on scroll */}
       <div className={`sm:hidden fixed z-50 transition-all duration-500 ease-out ${
         isScrolled 
           ? 'top-3 left-3 right-3 bg-white/70 backdrop-blur-xl shadow-lg shadow-black/10 border border-white/60 rounded-2xl px-4 py-2.5' 
           : 'top-0 left-0 right-0 bg-background/95 backdrop-blur-sm shadow-sm border-b border-stone-100 px-4 py-3'
       }`}>
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           {/* Logo - Left side */}
-          <span className="font-display text-base font-semibold text-foreground">keyCircle</span>
+          <span className="font-display text-base font-semibold text-foreground whitespace-nowrap">keyCircle</span>
           
           {/* Navigation Pills - Center */}
           <div className={`flex items-center gap-0.5 rounded-full p-1 transition-all duration-500 ${
@@ -192,10 +193,22 @@ const HeroSection = () => {
             ))}
           </div>
 
-          {/* Cart - Right side */}
-          <button className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center active:scale-95 transition-transform">
-            <ShoppingCart className="w-3.5 h-3.5 text-white" />
-          </button>
+          {/* Right side actions */}
+          <div className="flex items-center gap-1.5">
+            {/* Sign In Button */}
+            <button 
+              onClick={() => navigate('/auth')}
+              className="w-8 h-8 rounded-full bg-accent flex items-center justify-center active:scale-95 transition-transform"
+              aria-label="Sign In"
+            >
+              <LogIn className="w-3.5 h-3.5 text-accent-foreground" />
+            </button>
+            
+            {/* Cart Button */}
+            <button className="w-8 h-8 rounded-full bg-stone-800 flex items-center justify-center active:scale-95 transition-transform">
+              <ShoppingCart className="w-3.5 h-3.5 text-white" />
+            </button>
+          </div>
         </div>
       </div>
 

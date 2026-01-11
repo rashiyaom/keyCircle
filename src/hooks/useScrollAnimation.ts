@@ -43,12 +43,14 @@ export const useScrollAnimation = (options: ScrollAnimationOptions = {}) => {
 
 // Animation class presets
 export const animations = {
-  fadeUp: (isVisible: boolean, delay: number = 0) => 
-    `transition-all duration-700 ease-out ${
+  fadeUp: (isVisible: boolean, delay: number = 0) => {
+    const delayClass = delay ? `delay-${delay}` : '';
+    return `transition-all duration-700 ease-out ${delayClass} ${
       isVisible 
         ? 'opacity-100 translate-y-0' 
         : 'opacity-0 translate-y-8'
-    }` + (delay ? ` delay-[${delay}ms]` : ''),
+    }`;
+  },
   
   fadeIn: (isVisible: boolean) => 
     `transition-all duration-700 ease-out ${

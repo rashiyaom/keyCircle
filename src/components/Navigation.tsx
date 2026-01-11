@@ -9,7 +9,7 @@ const Navigation = () => {
 
   return (
     <nav className="relative hidden sm:flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6">
-      {/* Navigation Pills - Desktop (moved to left, replaces logo) */}
+      {/* Navigation Pills - Desktop with Sign In button inside */}
       <div className="hidden md:flex items-center gap-1 rounded-full bg-stone-200 p-1.5 shadow-nav">
         {navItems.map((item, index) => (
           <button
@@ -23,35 +23,27 @@ const Navigation = () => {
             {item}
           </button>
         ))}
-      </div>
-
-      {/* Tablet Logo (only show on tablet) */}
-      <span className="hidden sm:block md:hidden font-display text-lg font-semibold text-foreground">keyCircle</span>
-
-      {/* Right Actions - Desktop: positioned separately over hero image */}
-      {/* This is just a placeholder to maintain flex justify-between, actual buttons are in HeroSection */}
-      <div className="hidden md:flex items-center gap-3">
+        {/* Sign In button inside navbar */}
         <button 
           onClick={() => navigate('/auth')}
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-accent-foreground font-body font-medium text-sm hover:bg-accent/90 transition-all duration-300 shadow-md hover:shadow-lg"
+          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-accent text-accent-foreground font-body font-medium text-sm hover:bg-accent/90 transition-all duration-300"
         >
           <LogIn className="w-4 h-4" />
           Sign In
         </button>
       </div>
+
+      {/* Tablet Logo (only show on tablet) */}
+      <span className="hidden sm:block md:hidden font-display text-lg font-semibold text-foreground">keyCircle</span>
+
+      {/* Right Actions - Desktop: empty placeholder */}
+      <div className="hidden md:block" />
       
-      {/* Tablet Actions */}
+      {/* Tablet Actions - Just menu button */}
       <div className="flex sm:flex md:hidden items-center gap-2 sm:gap-3">
         <button 
-          onClick={() => navigate('/auth')}
-          className="inline-flex items-center gap-1.5 px-3 py-2 rounded-full bg-accent text-accent-foreground font-body font-medium text-xs hover:bg-accent/90 transition-all duration-300"
-        >
-          <LogIn className="w-3.5 h-3.5" />
-          Sign In
-        </button>
-        <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300 hover:bg-secondary/80"
         >
           {isMenuOpen ? (
             <X className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
@@ -81,6 +73,17 @@ const Navigation = () => {
               </button>
             ))}
             <hr className="my-2 border-border/50" />
+            {/* Sign In button in mobile menu */}
+            <button 
+              onClick={() => {
+                setIsMenuOpen(false);
+                navigate('/auth');
+              }}
+              className="px-4 py-3 rounded-xl text-sm font-medium font-body bg-accent text-accent-foreground hover:bg-accent/90 transition-all duration-200 text-left inline-flex items-center gap-2"
+            >
+              <LogIn className="w-4 h-4" />
+              Sign In
+            </button>
             <button 
               onClick={() => setIsMenuOpen(false)}
               className="px-4 py-3 rounded-xl text-sm font-medium font-body text-foreground hover:bg-muted transition-all duration-200 text-left"
