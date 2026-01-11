@@ -4,7 +4,7 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Vespa Matic Design System - Italian Elegance */
+/* Chaavi Deh Design System - Student Vehicle Sharing */
 
 @layer base {
   :root {
@@ -38,7 +38,7 @@
 
     --radius: 1rem;
 
-    /* Custom Vespa tokens */
+    /* Custom design tokens */
     --cream: 45 20% 96%;
     --cream-dark: 45 15% 92%;
     --olive: 75 35% 45%;

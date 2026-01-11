@@ -1,6 +1,8 @@
-# Chavi Deh - Peer-to-Peer Bike Rentals
+# Chaavi Deh - Student Vehicle Sharing Platform
 
-India's largest peer-to-peer bike rental platform. Rent bikes from your neighbors, or earn by sharing yours.
+A community-driven vehicle sharing platform built for hostel and student neighborhoods, where mobility is often limited but trust matters most. Verified students can securely list their bikes, scooties, or cycles, while others can rent them for short durations at transparent hourly rates.
+
+**"Chaavi Deh" means "Give the Key"** — unlocking movement, responsibility, and mutual trust within everyday hostel life.
 
 ## Tech Stack
 
@@ -62,8 +64,9 @@ src/
 
 ## Features
 
-- 🚲 Browse and rent bikes from local owners
-- 💰 List your bike and earn extra income
-- 📍 Find bikes in cities across India
-- 🛡️ Fully insured rides
-- ⭐ Verified owners and riders
+- � Rent scooties, bikes, and cycles from hostel mates
+- 💰 List your vehicle and earn extra income
+- 🏠 Find vehicles within your hostel/PG
+- ✅ 100% verified student community
+- � Trust-first design with ID verification
+- ⭐ Build your trust score through ratings
