@@ -79,18 +79,18 @@ const HeroSection = () => {
     },
     { 
       name: "Electric", 
-      image: "https://images.unsplash.com/photo-1620287341401-e558ec419496?w=400&h=400&fit=crop",
-      heroImage: "https://images.unsplash.com/photo-1620287341401-e558ec419496?w=1200&h=800&fit=crop",
+      image: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=400&h=400&fit=crop", // Electric scooter
+      heroImage: "https://images.unsplash.com/photo-1503736334956-4c8f8e92946d?w=1200&h=800&fit=crop",
     },
     { 
       name: "Vintage", 
-      image: "https://images.unsplash.com/photo-1525160354320-d8e92641c563?w=400&h=400&fit=crop",
-      heroImage: "https://images.unsplash.com/photo-1525160354320-d8e92641c563?w=1200&h=800&fit=crop",
+      image: "https://images.unsplash.com/photo-1511918984145-48de785d4c4e?w=400&h=400&fit=crop", // Vintage motorcycle
+      heroImage: "https://images.unsplash.com/photo-1511918984145-48de785d4c4e?w=1200&h=800&fit=crop",
     },
     { 
       name: "Urban", 
-      image: "https://images.unsplash.com/photo-1596738320732-8e57a513e64f?w=400&h=400&fit=crop",
-      heroImage: "https://images.unsplash.com/photo-1596738320732-8e57a513e64f?w=1200&h=800&fit=crop",
+      image: "https://images.unsplash.com/photo-1465447142348-e9952c393450?w=400&h=400&fit=crop", // Urban bike
+      heroImage: "https://images.unsplash.com/photo-1465447142348-e9952c393450?w=1200&h=800&fit=crop",
     },
     { 
       name: "Adventure", 
@@ -200,14 +200,14 @@ const HeroSection = () => {
       </div>
 
       {/* Desktop Bottom Panel - Description + Cards in same container */}
-      <div className="hidden lg:flex absolute bottom-[10%] left-8 right-16 z-40">
+      <div className="hidden lg:flex absolute bottom-[10%] left-8 z-40" style={{ width: '63%' }}>
         {/* Single Container for Description + Cards + Count/Arrows - Blends with website background */}
-        <div className="bg-background rounded-[24px] p-5 flex items-center gap-10 w-full">
+        <div className="bg-background rounded-[24px] p-5 flex items-center gap-8 w-full">
           {/* Description Text - Inside container on the left */}
           <div className="flex items-start gap-2.5 max-w-[180px] border-r border-stone-300/50 pr-8">
             <div className="w-2.5 h-2.5 bg-[#a3b87c] rounded-sm mt-1 flex-shrink-0" />
             <p className="text-[11px] font-body text-stone-800 uppercase leading-[1.7] tracking-wide font-semibold">
-              VESPA MATIC IS AN ENVIRONMENTALLY FRIENDLY CHOICE WITH AN ENGINE THAT IS EFFICIENT IN FUEL CONSUMPTION.
+              keyCircle is the trusted platform for verified student vehicle sharing—secure, convenient, and community-driven.
             </p>
           </div>
 
@@ -234,18 +234,18 @@ const HeroSection = () => {
             <span className="text-[9px] font-body text-stone-500 uppercase tracking-widest">Auto Play</span>
           </div>
           
-          {/* Cards + Count/Arrows Section - Wider to cut into hero image */}
-          <div>
+          {/* Cards + Count/Arrows Section - Expands to fill remaining space */}
+          <div className="flex-1">
             {/* Cards Row - Shows 3 cards that cycle through 15 categories */}
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-10 justify-end">
               {displayedCards.map((cardIndex, i) => (
                 <button
                   key={`card-${cardIndex}-${i}`}
                   onClick={() => setActiveIndex(cardIndex)}
                   className="relative group"
                 >
-                  {/* Card - Perfect square with smooth transition */}
-                  <div className={`relative w-[115px] h-[115px] rounded-2xl overflow-hidden transition-all duration-500 ease-out ${
+                  {/* Card - Larger square with more spacing */}
+                  <div className={`relative w-[140px] h-[140px] rounded-2xl overflow-hidden transition-all duration-500 ease-out ${
                     cardIndex === activeIndex 
                       ? 'ring-[3px] ring-[#c9b896] scale-100' 
                       : 'ring-1 ring-stone-200/60 opacity-70 hover:opacity-100 scale-95'
@@ -261,7 +261,7 @@ const HeroSection = () => {
                     />
                     {/* Label at bottom-center of card with background pill - BIGGER */}
                     <div className="absolute bottom-3 left-1/2 -translate-x-1/2">
-                      <span className={`px-4 py-1.5 rounded-full text-[11px] font-body tracking-wide backdrop-blur-md transition-all whitespace-nowrap ${
+                      <span className={`px-5 py-2 rounded-full text-[14px] font-body tracking-wide backdrop-blur-md transition-all whitespace-nowrap ${
                         cardIndex === activeIndex 
                           ? 'bg-white text-stone-900 font-bold shadow-md' 
                           : 'bg-white/90 text-stone-700 font-semibold'
@@ -320,19 +320,7 @@ const HeroSection = () => {
               {/* Title - Left side */}
               <div className="flex-1">
                 <h1 className="font-display text-[28px] font-normal leading-[1.1] tracking-tight text-foreground">
-                  Feel True
-                  <span className="inline-flex items-center mx-1 align-middle">
-                    <span className="flex items-center gap-0.5 px-1.5 py-0.5 rounded-full bg-foreground/5 border border-foreground/10">
-                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                      <span className="font-body text-[9px] font-medium text-muted-foreground">2.4k+</span>
-                    </span>
-                  </span>
-                  <br />
-                  Comfort
-                  <br />
-                  With
-                  <br />
-                  keyCircle
+                  rideCircle – <span className="text-primary">share, earn and ride vehicles</span>
                 </h1>
               </div>
 
@@ -391,28 +379,24 @@ const HeroSection = () => {
             </div>
 
             {/* Tablet & Desktop Title */}
-            <h1 className="hidden sm:block font-display text-5xl lg:text-6xl xl:text-7xl font-normal leading-[1.05] tracking-tight text-foreground">
-              Feel True
-              <span className="inline-flex items-center mx-2 align-middle">
-                <span className="flex items-center gap-1 px-3 py-1.5 rounded-full bg-foreground/5 border border-foreground/10">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="font-body text-xs font-medium text-muted-foreground">2.4k+</span>
-                </span>
-              </span>
-              <br />
-              Comfort With
-              <br />
-              keyCircle -
-              <br />
-              Follow Elegant
+            <h1 className="hidden sm:block font-display text-5xl lg:text-6xl xl:text-7xl font-semibold leading-[1.05] tracking-tight text-foreground text-center">
+              rideCircle – <span className="text-primary">share, earn and ride vehicles</span>
             </h1>
 
             {/* Scroll Indicator - Hidden on mobile */}
-            <div className="mt-4 sm:mt-8 hidden sm:block">
-              <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full border-2 border-dashed border-muted-foreground/30 flex items-center justify-center">
-                <div className="w-4 h-6 sm:w-5 sm:h-7 rounded-full border-2 border-muted-foreground/40 flex flex-col items-center justify-start pt-1.5">
-                  <div className="w-1 h-1.5 bg-muted-foreground/50 rounded-full animate-bounce" />
+            <div className="mt-4 sm:mt-8 hidden sm:block w-full">
+              <div className="flex items-center justify-center w-full">
+                <div className="flex-1 h-px border-t border-dashed border-stone-300" />
+                <div className="mx-4 flex items-center justify-center">
+                  <div className="w-20 h-12 rounded-full border-4 border-dashed border-stone-300 flex items-center justify-center bg-white">
+                    {/* Mouse icon */}
+                    <svg width="38" height="38" viewBox="0 0 38 38" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <rect x="9" y="4" width="20" height="30" rx="10" stroke="#A8A29E" strokeWidth="2.5"/>
+                      <rect x="17.5" y="10" width="3" height="8" rx="1.5" fill="#A8A29E"/>
+                    </svg>
+                  </div>
                 </div>
+                <div className="flex-1 h-px border-t border-dashed border-stone-300" />
               </div>
             </div>
           </div>
