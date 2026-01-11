@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { ArrowUpRight, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 import bikeHero from "@/assets/68ad479faa0c4d1a27bb8441e611cbef.jpg";
 import vespaClassic from "@/assets/vespa-classic.png";
 import vespaRetro from "@/assets/vespa-retro.png";
@@ -85,10 +85,10 @@ const HeroSection = () => {
   };
 
   return (
-    <section className="px-4 sm:px-6 lg:px-8 pb-4 overflow-hidden">
+    <section className="relative overflow-hidden px-4 sm:px-6 lg:px-0 pt-4 sm:pt-6">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-6 lg:gap-8">
         {/* Left Column */}
-        <div className="lg:col-span-5 flex flex-col justify-between py-2 sm:py-4 lg:py-6">
+        <div className="lg:col-span-5 flex flex-col justify-between px-0 sm:px-0 lg:px-8 py-2 sm:py-4 lg:py-6 pt-16 lg:pt-20 relative">
           {/* Hero Title */}
           <div 
             ref={titleAnim.ref}
@@ -135,19 +135,52 @@ const HeroSection = () => {
           >
             {/* Description and Interactive Element Row */}
             <div className="flex flex-col sm:flex-row sm:items-end gap-4 sm:gap-6 lg:gap-8">
-              {/* Description Text - Hidden on small mobile */}
-              <div className="hidden sm:block flex-shrink-0 max-w-[100px] sm:max-w-[120px]">
+              {/* Description Text - Shown on tablet and hidden on mobile */}
+              <div className="hidden sm:block lg:hidden flex-shrink-0 max-w-[140px]">
                 <div className="flex items-start gap-2">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-[#a3b87c] rounded-sm mt-1 flex-shrink-0" />
-                  <p className="text-[7px] sm:text-[9px] font-body text-muted-foreground uppercase leading-relaxed tracking-wide">
+                  <div className="w-2 h-2 bg-[#a3b87c] rounded-sm mt-1.5 flex-shrink-0" />
+                  <p className="text-[10px] font-body text-muted-foreground uppercase leading-relaxed tracking-wide">
                     CHAAVI DEH IS YOUR TRUSTED PLATFORM FOR STUDENT VEHICLE SHARING.
                   </p>
                 </div>
               </div>
+              
+              {/* Desktop Description - Bottom of left column */}
+              <div className="hidden lg:block flex-shrink-0 max-w-[160px] absolute bottom-8 left-8">
+                <div className="flex items-start gap-2.5">
+                  <div className="w-2.5 h-2.5 bg-[#a3b87c] rounded-sm mt-1 flex-shrink-0" />
+                  <p className="text-[10px] font-body text-muted-foreground uppercase leading-[1.7] tracking-wide">
+                    VESPA MATIC IS AN ENVIRONMENTALLY FRIENDLY CHOICE WITH AN ENGINE THAT IS EFFICIENT IN FUEL CONSUMPTION.
+                  </p>
+                </div>
+                
+                {/* Pagination below description */}
+                <div className="flex items-center gap-4 mt-4">
+                  <div className="font-body text-lg">
+                    <span className="font-semibold text-foreground">{activeIndex + 1}</span>
+                    <span className="text-muted-foreground/40">/</span>
+                    <span className="text-muted-foreground/40 text-sm">15</span>
+                  </div>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={handlePrev}
+                      className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
+                    >
+                      <ChevronLeft className="w-4 h-4" />
+                    </button>
+                    <button 
+                      onClick={handleNext}
+                      className="w-8 h-8 rounded-full border border-stone-300 flex items-center justify-center hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300"
+                    >
+                      <ChevronRight className="w-4 h-4" />
+                    </button>
+                  </div>
+                </div>
+              </div>
 
-              {/* Category Thumbnails with Slider */}
+              {/* Category Thumbnails with Slider - Hidden on desktop (shown on image instead) */}
               <div 
-                className="relative flex-1"
+                className="relative flex-1 lg:hidden"
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
               >
@@ -253,8 +286,8 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Pagination - Desktop only */}
-            <div className="hidden sm:flex items-center justify-between mt-3 sm:mt-4">
+            {/* Pagination - Tablet only (desktop has it in the card panel) */}
+            <div className="hidden sm:flex lg:hidden items-center justify-between mt-3 sm:mt-4">
               <div className="font-body text-sm sm:text-lg">
                 <span className="font-semibold text-foreground">{activeIndex + 1}</span>
                 <span className="text-muted-foreground/50">/</span>
@@ -276,8 +309,8 @@ const HeroSection = () => {
               </div>
             </div>
 
-            {/* Footer Decorations - Hidden on mobile */}
-            <div className="hidden sm:flex items-center justify-between text-muted-foreground/30 text-[10px] font-body mt-4">
+            {/* Footer Decorations - Tablet only */}
+            <div className="hidden sm:flex lg:hidden items-center justify-between text-muted-foreground/30 text-[10px] font-body mt-4">
               <span>+ + +</span>
               <span>+ +</span>
             </div>
@@ -287,13 +320,59 @@ const HeroSection = () => {
         {/* Right Column - Hero Image */}
         <div 
           ref={imageAnim.ref}
-          className={`lg:col-span-7 relative order-first lg:order-last transition-all duration-1000 delay-200 ease-out ${
+          className={`lg:col-span-7 relative order-first lg:order-last transition-all duration-1000 delay-200 ease-out pr-0 lg:pr-6 ${
             imageAnim.isVisible 
               ? 'opacity-100 translate-x-0 scale-100' 
               : 'opacity-0 translate-x-8 scale-95'
           }`}
         >
-          <div className="relative h-[280px] xs:h-[340px] sm:h-[480px] lg:h-[calc(100vh-140px)] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl">
+          {/* Contact/Cart section - positioned at top right corner of image */}
+          <div className="hidden lg:flex absolute top-0 right-6 z-30 items-center gap-2 bg-[#fafaf9] rounded-bl-[20px] pl-4 pb-3 pt-1 pr-1">
+            <button className="w-10 h-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center hover:opacity-90 transition-opacity">
+              <ShoppingCart className="w-4 h-4" />
+            </button>
+            <button className="px-5 py-2.5 rounded-full bg-card text-foreground font-medium font-body text-sm hover:bg-secondary transition-colors border border-border">
+              CONTACT US
+            </button>
+          </div>
+          
+          {/* Category Cards Panel - Cuts into hero image from left */}
+          <div className="hidden lg:block absolute bottom-6 left-0 z-30 bg-[#fafaf9] rounded-tr-[28px] pt-5 pr-5 pb-5 pl-0">
+            <div className="flex items-end gap-3 pl-4">
+              {categories.map((category, index) => (
+                <button
+                  key={category.name}
+                  onClick={() => setActiveIndex(index)}
+                  className="relative group"
+                >
+                  {/* Card with golden/tan border when active */}
+                  <div className={`relative w-[95px] h-[115px] rounded-2xl overflow-hidden transition-all duration-300 ${
+                    activeIndex === index 
+                      ? 'ring-[3px] ring-[#c9b896]' 
+                      : 'ring-1 ring-stone-200 opacity-80 hover:opacity-100'
+                  }`}>
+                    {/* Small icon top-right */}
+                    <div className="absolute top-2 right-2 w-5 h-5 rounded-full bg-white/70 flex items-center justify-center z-10">
+                      <ArrowUpRight className="w-2.5 h-2.5 text-stone-500" />
+                    </div>
+                    <img 
+                      src={category.image} 
+                      alt={category.name}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  {/* Label below card */}
+                  <span className={`block mt-2 text-center text-sm font-body transition-colors ${
+                    activeIndex === index ? 'text-foreground font-medium' : 'text-muted-foreground'
+                  }`}>
+                    {category.name}
+                  </span>
+                </button>
+              ))}
+            </div>
+          </div>
+          
+          <div className="relative h-[280px] xs:h-[340px] sm:h-[480px] lg:h-[calc(100vh-48px)] rounded-2xl sm:rounded-3xl lg:rounded-tr-none overflow-hidden shadow-xl">
             {/* Main Hero Image */}
             <img
               key={activeIndex}

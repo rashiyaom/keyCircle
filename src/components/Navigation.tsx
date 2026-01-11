@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Bike, Menu, X, ShoppingCart } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -7,16 +7,8 @@ const Navigation = () => {
 
   return (
     <nav className="relative flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6">
-      {/* Logo */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-accent flex items-center justify-center">
-          <Bike className="w-4 h-4 sm:w-5 sm:h-5 text-accent-foreground" />
-        </div>
-        <span className="font-display text-lg sm:text-xl font-semibold text-foreground">Chaavi Deh</span>
-      </div>
-
-      {/* Navigation Pills - Desktop */}
-      <div className="hidden md:flex items-center gap-1 rounded-full bg-secondary p-1.5 shadow-nav">
+      {/* Navigation Pills - Desktop (moved to left, replaces logo) */}
+      <div className="hidden md:flex items-center gap-1 rounded-full bg-stone-200 p-1.5 shadow-nav">
         {navItems.map((item, index) => (
           <button
             key={item}
@@ -31,17 +23,18 @@ const Navigation = () => {
         ))}
       </div>
 
-      {/* Right Actions */}
-      <div className="flex items-center gap-2 sm:gap-3">
-        <button className="hidden sm:flex w-10 h-10 rounded-full bg-primary text-primary-foreground items-center justify-center shadow-nav hover:opacity-90 transition-opacity">
-          <ShoppingCart className="w-4 h-4" />
-        </button>
-        <button className="hidden sm:block px-4 sm:px-5 py-2 sm:py-2.5 rounded-full bg-card text-foreground font-medium font-body text-xs sm:text-sm shadow-nav hover:bg-secondary transition-colors border border-border">
-          CONTACT
-        </button>
+      {/* Mobile Logo (only show on mobile) */}
+      <span className="md:hidden font-display text-lg font-semibold text-foreground">Chaavi Deh</span>
+
+      {/* Right Actions - Desktop: positioned separately over hero image */}
+      {/* This is just a placeholder to maintain flex justify-between, actual buttons are in HeroSection */}
+      <div className="hidden md:block" />
+      
+      {/* Mobile Actions */}
+      <div className="flex md:hidden items-center gap-2 sm:gap-3">
         <button 
           onClick={() => setIsMenuOpen(!isMenuOpen)}
-          className="md:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300"
+          className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-secondary flex items-center justify-center transition-all duration-300"
         >
           {isMenuOpen ? (
             <X className="w-4 h-4 sm:w-5 sm:h-5 text-foreground" />
