@@ -1,0 +1,595 @@
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import Navigation from "@/components/Navigation";
+import Footer from "@/components/Footer";
+import {
+  Car,
+  Bike,
+  Zap,
+  Upload,
+  DollarSign,
+  Shield,
+  CheckCircle2,
+  X,
+  MapPin,
+  FileText,
+  AlertCircle,
+  Calendar,
+  Fuel,
+  Users,
+  Settings,
+} from "lucide-react";
+import { supabase } from "@/lib/supabase";
+
+interface VehicleForm {
+  vehicleName: string;
+  vehicleType: "bike" | "scooty" | "cycle" | "car" | "";
+  registrationNumber: string;
+  registrationYear: string;
+  fuelType: string;
+  seats: string;
+  transmission: string;
+  hourlyRate: string;
+  location: string;
+  description: string;
+  ownerName: string;
+  ownerPhone: string;
+  licenseNumber: string;
+}
+
+interface FormErrors {
+  [key: string]: string;
+}
+
+const Share = () => {
+  const navigate = useNavigate();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [uploadedImages, setUploadedImages] = useState<string[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+
+  const [formData, setFormData] = useState<VehicleForm>({
+    vehicleName: "",
+    vehicleType: "",
+    registrationNumber: "",
+    registrationYear: "",
+    fuelType: "",
+    seats: "",
+    transmission: "",
+    hourlyRate: "",
+    location: "",
+    description: "",
+    ownerName: "",
+    ownerPhone: "",
+    licenseNumber: "",
+  });
+
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
+
+  const vehicleTypes = [
+    { id: "bike", label: "Bike", icon: Bike },
+    { id: "scooty", label: "Scooty", icon: Zap },
+    { id: "cycle", label: "Cycle", icon: Bike },
+    { id: "car", label: "Car", icon: Car },
+  ];
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files) {
+      Array.from(files).forEach((file) => {
+        const reader = new FileReader();
+        reader.onloadend = () => {
+          setUploadedImages((prev) => [...prev, reader.result as string]);
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+  };
+
+  const handleNext = () => {
+    if (currentStep < formSteps + 1) {
+      setCurrentStep(currentStep + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentStep > 1) {
+      setCurrentStep(currentStep - 1);
+    }
+  };
+
+  const handleSubmit = () => {
+    // Handle form submission
+    console.log("Submitting:", formData);
+    // Show dashboard teaser
+    setCurrentStep(formSteps + 2);
+  };
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900">
+      <Navigation />
+
+      {/* 1. HERO SECTION */}
+      <section className="relative min-h-[60vh] flex items-center justify-center overflow-hidden">
+        {/* Cinematic Background */}
+        <div className="absolute inset-0">
+          <div
+            className="absolute inset-0 bg-cover bg-center opacity-30"
+            style={{
+              backgroundImage:
+                "url('https://images.unsplash.com/photo-1558980664-769d59546b3d?w=1920&h=1080&fit=crop')",
+            }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-stone-900/90 via-stone-900/80 to-stone-900/90" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12 text-center">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            <motion.div
+              animate={{
+                rotate: [0, 10, -10, 0],
+                scale: [1, 1.1, 1],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                repeatDelay: 3,
+              }}
+              className="inline-block mb-6"
+            >
+              <div className="w-20 h-20 bg-accent/20 backdrop-blur-xl rounded-2xl flex items-center justify-center border border-accent/30">
+                <Key className="w-10 h-10 text-accent" />
+              </div>
+            </motion.div>
+
+            <h1 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4">
+              Your vehicle deserves more than parking.
+            </h1>
+            <p className="text-xl md:text-2xl text-stone-300 mb-8">
+              Share it safely. Earn on your terms.
+            </p>
+
+            {currentStep === 1 && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={handleNext}
+                className="px-8 py-4 bg-accent text-white rounded-2xl font-semibold text-lg flex items-center gap-2 mx-auto shadow-lg shadow-accent/30 hover:shadow-accent/50 transition-all"
+              >
+                List Your Ride
+                <Key className="w-5 h-5" />
+              </motion.button>
+            )}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* 2. STEP-BASED FLOW */}
+      {currentStep > 1 && (
+        <section className="relative py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            {/* Progress Bar */}
+            <div className="mb-12">
+              <div className="flex items-center justify-between mb-4">
+                {[1, 2, 3, 4].map((step) => {
+                  const stepNumber = step + 1; // Map to actual step numbers (2, 3, 4, 5)
+                  return (
+                    <div key={step} className="flex items-center flex-1">
+                      <div className="flex flex-col items-center flex-1">
+                        <div
+                          className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${
+                            stepNumber <= currentStep
+                              ? "bg-accent border-accent text-white"
+                              : "bg-white/10 border-white/20 text-stone-400"
+                          }`}
+                        >
+                          {stepNumber < currentStep ? (
+                            <CheckCircle className="w-6 h-6" />
+                          ) : (
+                            <span className="font-semibold">{step}</span>
+                          )}
+                        </div>
+                        <span
+                          className={`text-xs mt-2 ${
+                            stepNumber <= currentStep ? "text-white" : "text-stone-400"
+                          }`}
+                        >
+                          Step {step}
+                        </span>
+                      </div>
+                      {step < 4 && (
+                        <div
+                          className={`h-1 flex-1 mx-2 transition-all ${
+                            stepNumber < currentStep ? "bg-accent" : "bg-white/10"
+                          }`}
+                        />
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Step Content */}
+            <AnimatePresence mode="wait">
+              {/* STEP 1: VEHICLE IDENTITY */}
+              {currentStep === 2 && (
+                <motion.div
+                  key="step1"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20"
+                >
+                  <h2 className="font-display text-3xl font-bold text-white mb-8">
+                    Vehicle Identity
+                  </h2>
+
+                  <div className="space-y-6">
+                    <div>
+                      <Label className="text-white mb-2 block">Vehicle Name</Label>
+                      <Input
+                        value={formData.vehicleName}
+                        onChange={(e) =>
+                          setFormData({ ...formData, vehicleName: e.target.value })
+                        }
+                        placeholder="e.g., Honda Activa 6G"
+                        className="h-14 bg-white/10 border-white/20 text-white placeholder:text-stone-400"
+                      />
+                    </div>
+
+                    <div>
+                      <Label className="text-white mb-2 block">Vehicle Type</Label>
+                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                        {vehicleTypes.map((type) => (
+                          <button
+                            key={type.id}
+                            onClick={() =>
+                              setFormData({ ...formData, vehicleType: type.id })
+                            }
+                            className={`p-4 rounded-xl border-2 transition-all ${
+                              formData.vehicleType === type.id
+                                ? "border-accent bg-accent/20"
+                                : "border-white/20 bg-white/5 hover:border-white/40"
+                            }`}
+                          >
+                            <type.icon
+                              className={`w-8 h-8 mx-auto mb-2 ${
+                                formData.vehicleType === type.id
+                                  ? "text-accent"
+                                  : "text-stone-400"
+                              }`}
+                            />
+                            <p
+                              className={`text-sm font-medium ${
+                                formData.vehicleType === type.id
+                                  ? "text-white"
+                                  : "text-stone-400"
+                              }`}
+                            >
+                              {type.label}
+                            </p>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-white mb-2 block">Registration Year</Label>
+                      <Input
+                        type="number"
+                        value={formData.registrationYear}
+                        onChange={(e) =>
+                          setFormData({ ...formData, registrationYear: e.target.value })
+                        }
+                        placeholder="e.g., 2023"
+                        min="2000"
+                        max={new Date().getFullYear()}
+                        className="h-14 bg-white/10 border-white/20 text-white placeholder:text-stone-400"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* STEP 2: VISUALS */}
+              {currentStep === 3 && (
+                <motion.div
+                  key="step2"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20"
+                >
+                  <h2 className="font-display text-3xl font-bold text-white mb-8">
+                    Visuals
+                  </h2>
+
+                  <div className="space-y-6">
+                    {/* Upload Area */}
+                    <div className="border-2 border-dashed border-white/30 rounded-2xl p-12 text-center hover:border-accent/50 transition-colors">
+                      <input
+                        type="file"
+                        id="image-upload"
+                        multiple
+                        accept="image/*"
+                        onChange={handleImageUpload}
+                        className="hidden"
+                      />
+                      <label
+                        htmlFor="image-upload"
+                        className="cursor-pointer flex flex-col items-center"
+                      >
+                        <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-4">
+                          <Upload className="w-8 h-8 text-accent" />
+                        </div>
+                        <p className="text-white font-semibold mb-2">
+                          Drag & drop images here
+                        </p>
+                        <p className="text-stone-400 text-sm">
+                          or click to browse (up to 10 images)
+                        </p>
+                      </label>
+                    </div>
+
+                    {/* Floating Hint */}
+                    <motion.div
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="bg-accent/20 border border-accent/30 rounded-xl p-4 flex items-start gap-3"
+                    >
+                      <Sparkles className="w-5 h-5 text-accent flex-shrink-0 mt-0.5" />
+                      <p className="text-white text-sm">
+                        <strong>Tip:</strong> Clear photos get more bookings. Include multiple
+                        angles and highlight key features.
+                      </p>
+                    </motion.div>
+
+                    {/* Preview Grid */}
+                    {uploadedImages.length > 0 && (
+                      <div className="grid grid-cols-3 gap-4">
+                        {uploadedImages.map((img, index) => (
+                          <div
+                            key={index}
+                            className="relative group aspect-square rounded-xl overflow-hidden"
+                          >
+                            <img
+                              src={img}
+                              alt={`Upload ${index + 1}`}
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              onClick={() =>
+                                setUploadedImages(uploadedImages.filter((_, i) => i !== index))
+                              }
+                              className="absolute top-2 right-2 w-8 h-8 bg-red-500/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                            >
+                              <X className="w-4 h-4 text-white" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </motion.div>
+              )}
+
+              {/* STEP 3: PRICING & AVAILABILITY */}
+              {currentStep === 4 && (
+                <motion.div
+                  key="step3"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20"
+                >
+                  <h2 className="font-display text-3xl font-bold text-white mb-8">
+                    Pricing & Availability
+                  </h2>
+
+                  <div className="space-y-8">
+                    {/* Hourly Rate */}
+                    <div>
+                      <Label className="text-white mb-4 block text-lg">
+                        Hourly Rate: ₹{formData.hourlyRate[0]}
+                      </Label>
+                      <Slider
+                        value={formData.hourlyRate}
+                        onValueChange={(value) =>
+                          setFormData({ ...formData, hourlyRate: value })
+                        }
+                        min={50}
+                        max={2000}
+                        step={50}
+                        className="mb-2"
+                      />
+                      <div className="flex justify-between text-stone-400 text-sm">
+                        <span>₹50</span>
+                        <span>₹2000</span>
+                      </div>
+                    </div>
+
+                    {/* Availability Calendar Placeholder */}
+                    <div>
+                      <Label className="text-white mb-4 block text-lg">
+                        Availability
+                      </Label>
+                      <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                        <Calendar className="w-12 h-12 text-stone-400 mx-auto mb-4" />
+                        <p className="text-stone-400 text-center">
+                          Calendar selector will be implemented here
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+
+              {/* STEP 4: RULES & SAFETY */}
+              {currentStep === 5 && (
+                <motion.div
+                  key="step4"
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -20 }}
+                  className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20"
+                >
+                  <h2 className="font-display text-3xl font-bold text-white mb-8">
+                    Rules & Safety
+                  </h2>
+
+                  <div className="space-y-6">
+                    <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <Label className="text-white font-semibold">Fuel Policy</Label>
+                          <p className="text-stone-400 text-sm">
+                            Who pays for fuel during rental?
+                          </p>
+                        </div>
+                        <select
+                          value={formData.fuelPolicy}
+                          onChange={(e) =>
+                            setFormData({ ...formData, fuelPolicy: e.target.value })
+                          }
+                          className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                          title="Select fuel policy"
+                          aria-label="Fuel Policy"
+                        >
+                          <option value="user-pays">User Pays</option>
+                          <option value="owner-pays">Owner Pays</option>
+                          <option value="shared">Shared Cost</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="bg-white/5 rounded-xl p-6 border border-white/10">
+                      <div className="flex items-center justify-between mb-4">
+                        <div>
+                          <Label className="text-white font-semibold">Damage Policy</Label>
+                          <p className="text-stone-400 text-sm">
+                            How are damages handled?
+                          </p>
+                        </div>
+                        <select
+                          value={formData.damagePolicy}
+                          onChange={(e) =>
+                            setFormData({ ...formData, damagePolicy: e.target.value })
+                          }
+                          className="bg-white/10 border border-white/20 rounded-lg px-4 py-2 text-white"
+                          title="Select damage policy"
+                          aria-label="Damage Policy"
+                        >
+                          <option value="owner-insured">Owner Insured</option>
+                          <option value="user-liable">User Liable</option>
+                          <option value="shared">Shared Responsibility</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div>
+                      <Label className="text-white mb-2 block">Usage Rules</Label>
+                      <Textarea
+                        value={formData.usageRules}
+                        onChange={(e) =>
+                          setFormData({ ...formData, usageRules: e.target.value })
+                        }
+                        placeholder="e.g., No smoking, return with same fuel level, valid license required..."
+                        rows={4}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-stone-400"
+                      />
+                    </div>
+                  </div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+
+            {/* Navigation Buttons */}
+            {currentStep > 1 && (
+              <div className="flex items-center justify-between mt-8">
+                <Button
+                  variant="outline"
+                  onClick={handlePrevious}
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                >
+                  <ChevronLeft className="w-4 h-4 mr-2" />
+                  Previous
+                </Button>
+
+                {currentStep < formSteps + 1 ? (
+                  <Button
+                    onClick={handleNext}
+                    className="bg-accent hover:bg-accent/90 text-white"
+                  >
+                    Next
+                    <ChevronRight className="w-4 h-4 ml-2" />
+                  </Button>
+                ) : (
+                  <Button
+                    onClick={handleSubmit}
+                    className="bg-accent hover:bg-accent/90 text-white"
+                  >
+                    Submit for Verification
+                    <Shield className="w-4 h-4 ml-2" />
+                  </Button>
+                )}
+              </div>
+            )}
+          </div>
+        </section>
+      )}
+
+      {/* 4. OWNER DASHBOARD TEASER */}
+      {currentStep > formSteps + 1 && (
+        <section className="relative py-16 px-4 sm:px-6 lg:px-8">
+          <div className="max-w-4xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="bg-white/10 backdrop-blur-xl rounded-3xl p-8 md:p-12 border border-white/20"
+            >
+              <h2 className="font-display text-3xl font-bold text-white mb-6">
+                Stay in Control
+              </h2>
+              <p className="text-stone-300 mb-8">
+                Your listing is under review. Once approved, you'll have access to:
+              </p>
+
+              <div className="grid md:grid-cols-2 gap-6">
+                {[
+                  { icon: DollarSign, title: "Earnings Tracking", desc: "Monitor your income" },
+                  { icon: Calendar, title: "Booking Requests", desc: "Manage reservations" },
+                  { icon: Car, title: "Vehicle Status", desc: "Track availability" },
+                  { icon: Shield, title: "Support Access", desc: "24/7 assistance" },
+                ].map((item, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: index * 0.1 }}
+                    className="bg-white/5 rounded-xl p-6 border border-white/10"
+                  >
+                    <item.icon className="w-8 h-8 text-accent mb-4" />
+                    <h3 className="text-white font-semibold mb-2">{item.title}</h3>
+                    <p className="text-stone-400 text-sm">{item.desc}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </section>
+      )}
+
+      <Footer />
+    </div>
+  );
+};
+
+export default Share;

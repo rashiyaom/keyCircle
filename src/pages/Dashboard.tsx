@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/lib/supabase";
+import Navigation from "@/components/Navigation";
 import { 
   User, 
   Car, 
@@ -15,9 +16,6 @@ import {
   AlertCircle,
   Camera,
   ChevronRight,
-  LogOut,
-  Settings,
-  Bell,
   Award,
   TrendingUp,
   Clock,
@@ -107,6 +105,9 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-stone-50 via-white to-stone-100">
+      {/* Navigation */}
+      <Navigation />
+      
       {/* Animated Background Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <motion.div
@@ -132,152 +133,8 @@ const Dashboard = () => {
       {/* Grid Pattern */}
       <div className="fixed inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:32px_32px] pointer-events-none" />
 
-      <div className="relative z-10">
-        {/* Header */}
-        <header className="border-b border-border/50 bg-white/80 backdrop-blur-xl sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <motion.div
-                  whileHover={{ rotate: 360 }}
-                  transition={{ duration: 0.6 }}
-                  className="w-12 h-12 rounded-2xl bg-gradient-to-br from-accent to-accent/80 flex items-center justify-center shadow-lg"
-                >
-                  <Key className="w-6 h-6 text-white" />
-                </motion.div>
-                <div>
-                  <h1 className="font-display text-2xl font-bold text-foreground">keyCircle</h1>
-                  <p className="text-sm text-muted-foreground">Welcome back, {user?.full_name?.split(" ")[0]}!</p>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-3">
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center relative"
-                >
-                  <Bell className="w-5 h-5 text-foreground" />
-                  <span className="absolute top-1 right-1 w-2 h-2 bg-accent rounded-full" />
-                </motion.button>
-                
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={() => navigate("/settings")}
-                  className="w-10 h-10 rounded-xl bg-secondary flex items-center justify-center"
-                >
-                  <Settings className="w-5 h-5 text-foreground" />
-                </motion.button>
-
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  onClick={handleSignOut}
-                  className="px-4 py-2 rounded-xl bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 transition-colors flex items-center gap-2"
-                >
-                  <LogOut className="w-4 h-4" />
-                  Sign Out
-                </motion.button>
-              </div>
-            </div>
-          </div>
-        </header>
-
+      <div className="relative z-10 pt-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
-          {/* Hero Section - Rent or Share */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-accent via-accent/90 to-accent/80 p-8 md:p-12 shadow-2xl"
-          >
-            <div className="relative z-10">
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.2 }}
-                className="text-center space-y-4 mb-8"
-              >
-                <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-bold text-white">
-                  What brings you here today?
-                </h2>
-                <p className="text-xl text-white/90 max-w-2xl mx-auto">
-                  Choose your journey and unlock endless possibilities with keyCircle
-                </p>
-              </motion.div>
-
-              <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-                {/* Rent a Ride Card */}
-                <motion.button
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/rent")}
-                  className="group relative overflow-hidden rounded-3xl bg-white p-8 text-left shadow-xl hover:shadow-2xl transition-all"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-500/10 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500" />
-                  
-                  <div className="relative space-y-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Car className="w-8 h-8 text-white" />
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-                        Rent a Ride
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Browse through hundreds of vehicles from bikes to cars. Choose your perfect ride, book instantly, and hit the road in minutes.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-blue-600 font-semibold">
-                      <span>Explore Rides</span>
-                      <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                    </div>
-                  </div>
-                </motion.button>
-
-                {/* Share Your Vehicle Card */}
-                <motion.button
-                  whileHover={{ scale: 1.02, y: -5 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => navigate("/share")}
-                  className="group relative overflow-hidden rounded-3xl bg-white p-8 text-left shadow-xl hover:shadow-2xl transition-all"
-                >
-                  <div className="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-green-500/10 to-transparent rounded-full -translate-y-16 translate-x-16 group-hover:scale-150 transition-transform duration-500" />
-                  
-                  <div className="relative space-y-4">
-                    <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-green-500 to-green-600 flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                      <Key className="w-8 h-8 text-white" />
-                    </div>
-                    
-                    <div>
-                      <h3 className="font-display text-2xl font-bold text-foreground mb-2">
-                        Share Your Vehicle
-                      </h3>
-                      <p className="text-muted-foreground leading-relaxed">
-                        Turn your idle vehicle into income. List it on keyCircle, set your price, and earn money while helping others travel.
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 text-green-600 font-semibold">
-                      <span>Start Earning</span>
-                      <ChevronRight className="w-5 h-5 group-hover:translate-x-2 transition-transform" />
-                    </div>
-                  </div>
-                </motion.button>
-              </div>
-            </div>
-
-            {/* Decorative Elements */}
-            <div className="absolute inset-0 opacity-10">
-              <div className="absolute top-10 left-10 w-20 h-20 border-4 border-white rounded-full" />
-              <div className="absolute bottom-10 right-10 w-32 h-32 border-4 border-white rounded-full" />
-              <div className="absolute top-1/2 right-1/4 w-16 h-16 border-4 border-white rotate-45" />
-            </div>
-          </motion.div>
-
           {/* Stats Cards */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[

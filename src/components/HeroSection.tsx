@@ -48,7 +48,7 @@ const HeroSection = () => {
   const mobileNavItems = [
     { label: "Home", path: "/" },
     { label: "Market", path: "/marketplace" },
-    { label: "About", path: "/" },
+    { label: "Services", path: "/services" },
     { label: "Profile", path: isAuthenticated ? "/profile" : "/auth" }
   ];
 

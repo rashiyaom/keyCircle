@@ -13,6 +13,9 @@ import AuthCallback from "./pages/AuthCallback";
 import Dashboard from "./pages/Dashboard";
 import Profile from "./pages/Profile";
 import Marketplace from "./pages/Marketplace";
+import Share from "./pages/Share";
+import Rent from "./pages/Rent";
+import Services from "./pages/Services";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +34,9 @@ const App = () => (
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/services" element={<Services />} />
+            <Route path="/share" element={<Share />} />
+            <Route path="/rent" element={<Rent />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup/journey" element={<SignUpJourney />} />
             {/* Hidden admin route - not visible in UI */}

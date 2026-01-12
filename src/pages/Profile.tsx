@@ -17,6 +17,7 @@ import {
   Edit2,
   Upload,
   ChevronRight,
+  LogOut,
 } from "lucide-react";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -226,6 +227,11 @@ export default function Profile() {
     reader.readAsDataURL(file);
   };
 
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+    navigate("/signin");
+  };
+
   if (loading) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-stone-50 via-white to-stone-100">
@@ -255,11 +261,11 @@ export default function Profile() {
         )}
       </AnimatePresence>
 
-      {/* Header */}
+      {/* Mobile Header - Only visible on mobile */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="bg-white border-b border-stone-200 sticky top-0 z-40 backdrop-blur-lg bg-white/80"
+        className="sm:hidden bg-white border-b border-stone-200 sticky top-0 z-40 backdrop-blur-lg bg-white/80"
       >
         <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
           <div className="flex items-center gap-4">
@@ -273,11 +279,55 @@ export default function Profile() {
               My Profile
             </h1>
           </div>
-          <div className="text-sm text-stone-500">Complete your profile</div>
+          <div className="flex items-center gap-3">
+            <div className="text-sm text-stone-500 hidden xs:block">Complete your profile</div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSignOut}
+              className="px-3 py-2 rounded-xl bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 transition-colors flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              <span className="hidden xs:inline">Sign Out</span>
+            </motion.button>
+          </div>
         </div>
       </motion.div>
 
-      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6">
+      {/* Desktop Header - Only visible on desktop */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="hidden sm:block bg-white border-b border-stone-200 sticky top-0 z-40 backdrop-blur-lg bg-white/80"
+      >
+        <div className="max-w-4xl mx-auto px-6 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => navigate("/dashboard")}
+              className="text-stone-600 hover:text-stone-900 transition-colors"
+            >
+              <ChevronRight className="w-6 h-6 rotate-180" />
+            </button>
+            <h1 className="text-2xl font-display font-bold text-stone-900">
+              My Profile
+            </h1>
+          </div>
+          <div className="flex items-center gap-4">
+            <div className="text-sm text-stone-500">Complete your profile</div>
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              onClick={handleSignOut}
+              className="px-4 py-2 rounded-xl bg-red-50 text-red-600 font-medium text-sm hover:bg-red-100 transition-colors flex items-center gap-2"
+            >
+              <LogOut className="w-4 h-4" />
+              Sign Out
+            </motion.button>
+          </div>
+        </div>
+      </motion.div>
+
+      <div className="max-w-4xl mx-auto px-6 py-8 space-y-6 sm:pt-8 pt-20">
         {/* Profile Header Card */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
