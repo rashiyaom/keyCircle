@@ -11,11 +11,61 @@ const AuthCallback = () => {
   useEffect(() => {
     const handleCallback = async () => {
       try {
-        // Get the hash from URL (Supabase uses hash for auth tokens)
+        // Check for OAuth code in URL (Google OAuth callback)
+        const searchParams = new URLSearchParams(window.location.search);
+        const code = searchParams.get("code");
+        
+        // Check for hash parameters (email verification)
         const hashParams = new URLSearchParams(window.location.hash.substring(1));
         const accessToken = hashParams.get("access_token");
         const type = hashParams.get("type");
+        const errorDescription = hashParams.get("error_description");
 
+        // Handle errors from OAuth provider
+        if (errorDescription) {
+          throw new Error(errorDescription);
+        }
+
+        // Handle OAuth callback (Google, etc.)
+        if (code) {
+          // Exchange code for session - Supabase handles this automatically
+          const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+
+          if (sessionError) {
+            console.error("Session error:", sessionError);
+            throw sessionError;
+          }
+
+          if (session) {
+            setStatus("success");
+            setMessage("Successfully signed in with Google! Redirecting...");
+            
+            // Redirect to dashboard
+            setTimeout(() => {
+              navigate("/dashboard");
+            }, 1500);
+            return;
+          }
+
+          // If no session yet, wait a bit and try again
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const { data: { session: retrySession }, error: retryError } = await supabase.auth.getSession();
+          
+          if (retryError) throw retryError;
+          
+          if (retrySession) {
+            setStatus("success");
+            setMessage("Successfully signed in! Redirecting...");
+            setTimeout(() => {
+              navigate("/dashboard");
+            }, 1500);
+            return;
+          }
+          
+          throw new Error("Failed to establish session. Please try signing in again.");
+        }
+
+        // Handle email verification callback
         if (type === "signup") {
           setStatus("success");
           setMessage("Email verified successfully! You can now sign in.");
@@ -24,8 +74,11 @@ const AuthCallback = () => {
           setTimeout(() => {
             navigate("/signin");
           }, 2000);
-        } else if (accessToken) {
-          // Get the current session
+          return;
+        }
+
+        // Handle hash-based auth (older email verification)
+        if (accessToken) {
           const { data: { session }, error } = await supabase.auth.getSession();
 
           if (error) throw error;
@@ -34,15 +87,19 @@ const AuthCallback = () => {
             setStatus("success");
             setMessage("Authentication successful! Redirecting...");
             
-            // Redirect to home page
+            // Redirect to dashboard
             setTimeout(() => {
-              navigate("/");
+              navigate("/dashboard");
             }, 1500);
+            return;
           }
-        } else {
-          throw new Error("No authentication token found");
         }
+
+        // If we reach here, no valid auth method was found
+        throw new Error("No authentication token found. Please try signing in again.");
+
       } catch (error: unknown) {
+        console.error("Auth callback error:", error);
         setStatus("error");
         setMessage(error instanceof Error ? error.message : "Authentication failed");
         

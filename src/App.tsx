@@ -11,6 +11,8 @@ import SignUp from "./pages/SignUp";
 import SignUpJourney from "./pages/SignUpJourney";
 import AdminSignIn from "./pages/AdminSignIn";
 import AuthCallback from "./pages/AuthCallback";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -26,6 +28,8 @@ const App = () => (
             <Route path="/" element={<Index />} />
             <Route path="/auth" element={<Auth />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/profile" element={<Profile />} />
             <Route path="/signin" element={<SignIn />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/signup/journey" element={<SignUpJourney />} />
