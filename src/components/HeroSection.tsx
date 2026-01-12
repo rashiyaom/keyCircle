@@ -1,32 +1,9 @@
 import { useState, useEffect, useRef } from "react";
 import { ArrowUpRight, ChevronLeft, ChevronRight, ShoppingCart, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useScrollAnimation } from "@/hooks/useScrollAnimation";
+import { supabase } from "@/lib/supabase";
 import bikeHero from "@/assets/68ad479faa0c4d1a27bb8441e611cbef.jpg";
-
-// Custom hook for scroll animations
-const useScrollAnimation = () => {
-  const ref = useRef<HTMLDivElement>(null);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setIsVisible(true);
-        }
-      },
-      { threshold: 0.1, rootMargin: '0px 0px -50px 0px' }
-    );
-
-    if (ref.current) {
-      observer.observe(ref.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
-
-  return { ref, isVisible };
-};
 
 const HeroSection = () => {
   const navigate = useNavigate();
@@ -35,6 +12,7 @@ const HeroSection = () => {
   const [isPlaying, setIsPlaying] = useState(true);
   const [displayedCards, setDisplayedCards] = useState([0, 1, 2]);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   
   // Scroll animations
   const titleAnim = useScrollAnimation();
@@ -50,7 +28,29 @@ const HeroSection = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const mobileNavItems = ["Home", "Product", "About", "Pricing"];
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    
+    checkAuth();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const mobileNavItems = [
+    { label: "Home", path: "/" },
+    { label: "Market", path: "/marketplace" },
+    { label: "About", path: "/" },
+    { label: "Profile", path: isAuthenticated ? "/profile" : "/auth" }
+  ];
 
   // 15 categories with web images
   const categories = [
@@ -181,14 +181,15 @@ const HeroSection = () => {
           }`}>
             {mobileNavItems.map((item, index) => (
               <button
-                key={item}
+                key={item.label}
+                onClick={() => navigate(item.path)}
                 className={`px-2.5 py-1.5 rounded-full text-[10px] font-medium font-body transition-all duration-300 ${
                   index === 0
                     ? "bg-stone-800 text-white"
                     : "text-stone-700 hover:bg-stone-300/50"
                 }`}
               >
-                {item}
+                {item.label}
               </button>
             ))}
           </div>

@@ -1,11 +1,36 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Menu, X, ShoppingCart, LogIn } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "@/lib/supabase";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
-  const navItems = ["Home", "Product", "About", "Pricing"];
+  
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    
+    checkAuth();
+    
+    // Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setIsAuthenticated(!!session);
+    });
+    
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const navItems = [
+    { label: "Home", path: "/" },
+    { label: "Market", path: "/marketplace" },
+    { label: "About", path: "/" },
+    { label: "Profile", path: isAuthenticated ? "/profile" : "/auth" }
+  ];
 
   return (
     <nav className="relative hidden sm:flex items-center justify-between px-4 sm:px-8 py-4 sm:py-6">
@@ -13,14 +38,15 @@ const Navigation = () => {
       <div className="hidden md:flex items-center gap-1 rounded-full bg-stone-200 p-1.5 shadow-nav">
         {navItems.map((item, index) => (
           <button
-            key={item}
+            key={item.label}
+            onClick={() => navigate(item.path)}
             className={`px-5 py-2.5 rounded-full text-sm font-medium font-body transition-all duration-300 ${
               index === 0
                 ? "bg-primary text-primary-foreground"
                 : "text-foreground hover:bg-muted"
             }`}
           >
-            {item}
+            {item.label}
           </button>
         ))}
         {/* Sign In button inside navbar */}
@@ -61,15 +87,18 @@ const Navigation = () => {
           <div className="flex flex-col gap-1">
             {navItems.map((item, index) => (
               <button
-                key={item}
-                onClick={() => setIsMenuOpen(false)}
+                key={item.label}
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  navigate(item.path);
+                }}
                 className={`px-4 py-3 rounded-xl text-sm font-medium font-body transition-all duration-200 text-left ${
                   index === 0
                     ? "bg-primary text-primary-foreground"
                     : "text-foreground hover:bg-muted"
                 }`}
               >
-                {item}
+                {item.label}
               </button>
             ))}
             <hr className="my-2 border-border/50" />
