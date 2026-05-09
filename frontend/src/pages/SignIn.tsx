@@ -1,0 +1,247 @@
+import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, Mail, Lock, Eye, EyeOff, Bike, AlertCircle, Check } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useState } from "react";
+import { useAuth } from "@/contexts/AuthContext";
+
+// Dummy credentials for testing
+const DUMMY_CREDENTIALS = {
+  email: "demo@keycircle.com",
+  password: "Demo123!"
+};
+
+const SignIn = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const { login } = useAuth();
+  const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+
+  // Get the page user tried to visit before being redirected to signin
+  const from = (location.state as any)?.from?.pathname || '/';
+
+  const handleSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+    setSuccessMessage("");
+
+    // Validation
+    if (!email || !password) {
+      setError("Please enter both email and password");
+      return;
+    }
+
+    setIsLoading(true);
+
+    try {
+      // Check for dummy credentials first (for testing without Supabase)
+      if (email.trim() === DUMMY_CREDENTIALS.email && password === DUMMY_CREDENTIALS.password) {
+        const loginSuccess = login(email.trim(), password);
+        
+        if (loginSuccess) {
+          setSuccessMessage("✓ Login successful! Redirecting...");
+          
+          // Clear form and redirect to the page user tried to visit or home
+          setTimeout(() => {
+            setEmail("");
+            setPassword("");
+            setIsLoading(false);
+            navigate(from || '/dashboard', { replace: true });
+          }, 1500);
+          
+          return;
+        } else {
+          setError("Login failed. Please try again.");
+          setIsLoading(false);
+          return;
+        }
+      }
+
+      // For now, only accept dummy credentials
+      setError("Invalid email or password. Use dummy credentials: demo@keycircle.com / Demo123!");
+      setIsLoading(false);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      setError(errorMessage);
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen relative overflow-hidden bg-gradient-to-br from-stone-50 via-white to-stone-100">
+      {/* Elegant background patterns */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-0 right-1/4 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
+        <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-3xl" />
+      </div>
+
+      {/* Subtle grid pattern */}
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:24px_24px] pointer-events-none" />
+
+      <div className="relative min-h-screen flex items-center justify-center px-4 py-12">
+        <div className="w-full max-w-md">
+          {/* Back Button */}
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => navigate('/auth')}
+            className="mb-8 hover:bg-white/50 backdrop-blur-sm"
+          >
+            <ArrowLeft className="w-4 h-4 mr-2" />
+            Back
+          </Button>
+
+          {/* Sign In Form Container */}
+          <div className="bg-white/80 backdrop-blur-xl rounded-3xl sm:rounded-[2rem] shadow-2xl border border-white/20 p-8 sm:p-10 space-y-8">
+            {/* Header */}
+            <div className="text-center space-y-3">
+              <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-accent/10 to-accent/5 mb-2">
+                <Bike className="w-8 h-8 text-accent" />
+              </div>
+              <h2 className="font-display text-3xl sm:text-4xl font-semibold text-foreground">
+                Welcome Back
+              </h2>
+              <p className="font-body text-sm text-muted-foreground">
+                Sign in to access your account
+              </p>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleSignIn} className="space-y-5">
+              {/* Dummy Login Helper */}
+              <div className="flex items-center justify-between p-3 rounded-xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200">
+                <div className="flex-1">
+                  <p className="text-xs font-semibold text-blue-900">Demo Mode</p>
+                  <p className="text-xs text-blue-700 mt-0.5">
+                    {DUMMY_CREDENTIALS.email}
+                  </p>
+                </div>
+                <Button
+                  type="button"
+                  size="sm"
+                  variant="outline"
+                  onClick={() => {
+                    setEmail(DUMMY_CREDENTIALS.email);
+                    setPassword(DUMMY_CREDENTIALS.password);
+                  }}
+                  className="bg-blue-100 hover:bg-blue-200 text-blue-900 border-blue-300 text-xs px-3 py-1.5 h-auto"
+                >
+                  Use Demo
+                </Button>
+              </div>
+
+              {/* Error/Success Messages */}
+              {error && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-red-50 border border-red-200">
+                  <AlertCircle className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-red-700 font-body">{error}</p>
+                </div>
+              )}
+              
+              {successMessage && (
+                <div className="flex items-start gap-3 p-4 rounded-xl bg-green-50 border border-green-200">
+                  <Check className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                  <p className="text-sm text-green-700 font-body">{successMessage}</p>
+                </div>
+              )}
+
+              {/* Email Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground font-body">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    <Mail className="w-5 h-5" />
+                  </div>
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="your.email@example.com"
+                    className="w-full pl-12 pr-4 py-3.5 rounded-xl border border-border/50 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-sm font-body"
+                    required
+                  />
+                </div>
+              </div>
+
+              {/* Password Input */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-foreground font-body">
+                  Password
+                </label>
+                <div className="relative">
+                  <div className="absolute left-4 top-1/2 -translate-y-1/2 text-muted-foreground">
+                    <Lock className="w-5 h-5" />
+                  </div>
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter your password"
+                    className="w-full pl-12 pr-12 py-3.5 rounded-xl border border-border/50 bg-white/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-accent/20 focus:border-accent transition-all text-sm font-body"
+                    required
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {showPassword ? (
+                      <EyeOff className="w-5 h-5" />
+                    ) : (
+                      <Eye className="w-5 h-5" />
+                    )}
+                  </button>
+                </div>
+              </div>
+
+              {/* Remember Me */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="remember"
+                  className="w-4 h-4 rounded border-border/50 text-accent focus:ring-accent/20"
+                />
+                <label htmlFor="remember" className="text-sm text-muted-foreground font-body cursor-pointer">
+                  Keep me signed in
+                </label>
+              </div>
+
+              {/* Sign In Button */}
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="w-full bg-accent hover:bg-accent/90 text-accent-foreground py-6 rounded-xl font-medium text-base shadow-lg hover:shadow-xl transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isLoading ? "Signing in..." : "Sign In"}
+              </Button>
+            </form>
+
+            {/* Sign Up Link */}
+            <div className="text-center pt-4 border-t border-border/50">
+              <p className="text-sm text-muted-foreground font-body">
+                Don't have an account?{" "}
+                <button
+                  onClick={() => navigate('/signup/journey')}
+                  className="text-accent hover:underline font-semibold"
+                >
+                  Sign up for free
+                </button>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Bottom gradient overlay */}
+      <div className="fixed inset-0 bg-gradient-to-t from-accent/5 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+};
+
+export default SignIn;
