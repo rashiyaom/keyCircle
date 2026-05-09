@@ -36,8 +36,7 @@ interface FormErrors {
 
 const Share = () => {
   const navigate = useNavigate();
-  const { user: authUser, isAuthenticated: authIsAuthenticated } = useAuth();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { user: authUser, isAuthenticated } = useAuth();
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [uploadedImages, setUploadedImages] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -61,32 +60,14 @@ const Share = () => {
   const [formErrors, setFormErrors] = useState<FormErrors>({});
 
   useEffect(() => {
-    const checkAuth = async () => {
-      // Check dummy auth first
-      if (authIsAuthenticated && authUser) {
-        setIsAuthenticated(true);
-        setCurrentUser(authUser);
-        setFormData(prev => ({
-          ...prev,
-          ownerName: authUser.name || "",
-        }));
-        return;
-      }
-
-      // Fallback to Supabase
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      setCurrentUser(session?.user || null);
-      
-      if (session?.user) {
-        setFormData(prev => ({
-          ...prev,
-          ownerName: session.user.user_metadata?.full_name || "",
-        }));
-      }
-    };
-    checkAuth();
-  }, [authUser, authIsAuthenticated]);
+    if (authUser) {
+      setCurrentUser(authUser);
+      setFormData(prev => ({
+        ...prev,
+        ownerName: authUser.name || "",
+      }));
+    }
+  }, [authUser]);
 
   const vehicleTypes = [
     { id: "bike", label: "Bike", icon: Bike },
@@ -226,42 +207,27 @@ const Share = () => {
 
     try {
       const imageUrl = uploadedImages[0] || "https://images.unsplash.com/photo-1558980664-769d59546b3d?w=800&h=600&fit=crop";
-      const ownerRating = 5.0;
 
-      const { data, error } = await supabase
-        .from('vehicles')
-        .insert([
-          {
-            name: formData.vehicleName,
-            type: formData.vehicleType,
-            registration_number: formData.registrationNumber,
-            registration_year: parseInt(formData.registrationYear),
-            fuel_type: formData.fuelType,
-            seats: parseInt(formData.seats),
-            transmission: formData.transmission,
-            price_per_hour: parseInt(formData.hourlyRate),
-            location: formData.location,
-            description: formData.description,
-            owner_name: formData.ownerName,
-            owner_phone: formData.ownerPhone,
-            owner_license: null,
-            owner_rating: ownerRating,
-            owner_id: currentUser?.id,
-            image_url: imageUrl,
-            images: uploadedImages,
-            verified: true,
-            available: true,
-            distance: "1.0 km",
-          }
-        ])
-        .select();
+      // Mock successful submission (replace with backend API call later)
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      if (error) {
-        console.error('Error inserting vehicle:', error);
-        alert('Failed to add vehicle. Please try again.');
-        setIsSubmitting(false);
-        return;
-      }
+      console.log('Vehicle submitted:', {
+        name: formData.vehicleName,
+        type: formData.vehicleType,
+        registration_number: formData.registrationNumber,
+        registration_year: parseInt(formData.registrationYear),
+        fuel_type: formData.fuelType,
+        seats: parseInt(formData.seats),
+        transmission: formData.transmission,
+        price_per_hour: parseInt(formData.hourlyRate),
+        location: formData.location,
+        description: formData.description,
+        owner_name: formData.ownerName,
+        owner_phone: formData.ownerPhone,
+        owner_id: currentUser?.id,
+        image_url: imageUrl,
+        images: uploadedImages,
+      });
 
       setIsSubmitting(false);
       setSubmitSuccess(true);

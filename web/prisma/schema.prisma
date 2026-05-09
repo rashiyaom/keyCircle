@@ -1,0 +1,100 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  email            String    @unique @db.VarChar(255)
+  full_name        String    @db.VarChar(255)
+  phone            String?   @db.VarChar(20)
+  user_type        String?   @default("renter") @db.VarChar(20)
+  avatar_url       String?   @db.VarChar(500)
+  verified         Boolean?  @default(false)
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+  
+  // Relations
+  vehicles         Vehicle[]
+  bookings         Booking[]         @relation("BookingRenter")
+  booking_reviews  BookingReview[]
+  verification     VerificationStatus?
+}
+
+model Vehicle {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  owner_id         String    @db.Uuid
+  name             String    @db.VarChar(255)
+  type             String    @db.VarChar(50)
+  category         String?   @db.VarChar(100)
+  image_url        String?   @db.VarChar(500)
+  fuel_type        String?   @db.VarChar(50)
+  transmission     String?   @db.VarChar(50)
+  seats            Int?
+  price_per_hour   Decimal?  @db.Decimal(10, 2)
+  price_per_day    Decimal?  @db.Decimal(10, 2)
+  location         String?   @db.VarChar(500)
+  available        Boolean?  @default(true)
+  rating           Decimal?  @default(0) @db.Decimal(3, 2)
+  features         String?
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  owner            User      @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  bookings         Booking[]
+}
+
+model Booking {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  vehicle_id       String    @db.Uuid
+  renter_id        String    @db.Uuid
+  start_time       DateTime  @db.Timestamptz(6)
+  end_time         DateTime  @db.Timestamptz(6)
+  total_price      Decimal?  @db.Decimal(10, 2)
+  status           String?   @default("pending") @db.VarChar(20)
+  pickup_location  String?   @db.VarChar(500)
+  return_location  String?   @db.VarChar(500)
+  notes            String?
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  vehicle          Vehicle   @relation(fields: [vehicle_id], references: [id], onDelete: Cascade)
+  renter           User      @relation("BookingRenter", fields: [renter_id], references: [id], onDelete: Cascade)
+  reviews          BookingReview[]
+}
+
+model BookingReview {
+  id               String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  booking_id       String    @db.Uuid
+  reviewer_id      String    @db.Uuid
+  rating           Int?
+  comment          String?
+  created_at       DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at       DateTime? @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  booking          Booking   @relation(fields: [booking_id], references: [id], onDelete: Cascade)
+  reviewer         User      @relation(fields: [reviewer_id], references: [id], onDelete: Cascade)
+}
+
+model VerificationStatus {
+  id                   String    @id @default(dbgenerated("uuid_generate_v4()")) @db.Uuid
+  user_id              String    @unique @db.Uuid
+  document_type        String?   @db.VarChar(50)
+  document_number      String?   @db.VarChar(100)
+  verification_provider String?   @db.VarChar(100)
+  status               String?   @default("pending") @db.VarChar(20)
+  verified_at          DateTime? @db.Timestamptz(6)
+  expires_at           DateTime? @db.Timestamptz(6)
+  created_at           DateTime? @default(now()) @db.Timestamptz(6)
+  updated_at           DateTime? @default(now()) @db.Timestamptz(6)
+
+  // Relations
+  user                 User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+}

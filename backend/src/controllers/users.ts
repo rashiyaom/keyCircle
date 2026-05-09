@@ -63,6 +63,11 @@ export async function handleUpdateUser(req: Request, res: Response): Promise<voi
     return;
   }
 
+  if (req.user?.userId !== id) {
+    sendError(res, 403, "You can only update your own profile");
+    return;
+  }
+
   const result = await updateUserById(id, req.body ?? {});
 
   if (!result.success) {

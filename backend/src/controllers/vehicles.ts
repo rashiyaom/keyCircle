@@ -15,15 +15,19 @@ function getRouteParamId(value: string | string[] | undefined): string | null {
 }
 
 export async function handleListVehicles(req: Request, res: Response): Promise<void> {
-  const result = await listVehicles({
-    type: typeof req.query.type === "string" ? req.query.type : undefined,
-    available:
-      typeof req.query.available === "string"
-        ? req.query.available === "true"
-        : undefined,
-    location: typeof req.query.location === "string" ? req.query.location : undefined,
-    search: typeof req.query.search === "string" ? req.query.search : undefined,
-  });
+  const filters: any = {};
+  if (typeof req.query.type === "string") filters.type = req.query.type;
+  if (typeof req.query.available === "string") filters.available = req.query.available === "true";
+  if (typeof req.query.location === "string") filters.location = req.query.location;
+  if (typeof req.query.search === "string") filters.search = req.query.search;
+
+  const limit = parseInt(req.query.limit as string, 10);
+  if (!isNaN(limit)) filters.limit = limit;
+  
+  const offset = parseInt(req.query.offset as string, 10);
+  if (!isNaN(offset)) filters.offset = offset;
+
+  const result = await listVehicles(filters);
 
   if (!result.success) {
     sendError(res, 400, result.error?.message ?? "Unable to list vehicles", result.error?.details);
@@ -59,6 +63,11 @@ export async function handleCreateVehicle(req: Request, res: Response): Promise<
     return;
   }
 
+  if (req.user?.userId !== owner_id) {
+    sendError(res, 403, "You can only create vehicles for yourself");
+    return;
+  }
+
   const result = await createVehicle(req.body ?? {});
 
   if (!result.success) {
@@ -77,6 +86,17 @@ export async function handleUpdateVehicle(req: Request, res: Response): Promise<
     return;
   }
 
+  const existingVehicle = await getVehicleById(id);
+  if (!existingVehicle.success || !existingVehicle.data) {
+    sendError(res, 404, "Vehicle not found");
+    return;
+  }
+
+  if (req.user?.userId !== existingVehicle.data.owner_id) {
+    sendError(res, 403, "You can only update your own vehicles");
+    return;
+  }
+
   const result = await updateVehicle(id, req.body ?? {});
 
   if (!result.success) {
@@ -92,6 +112,17 @@ export async function handleDeleteVehicle(req: Request, res: Response): Promise<
 
   if (!id) {
     sendError(res, 400, "Vehicle id is required");
+    return;
+  }
+
+  const existingVehicle = await getVehicleById(id);
+  if (!existingVehicle.success || !existingVehicle.data) {
+    sendError(res, 404, "Vehicle not found");
+    return;
+  }
+
+  if (req.user?.userId !== existingVehicle.data.owner_id) {
+    sendError(res, 403, "You can only delete your own vehicles");
     return;
   }
 

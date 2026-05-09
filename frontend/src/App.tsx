@@ -19,6 +19,7 @@ import About from "./pages/About";
 import Share from "./pages/Share";
 import Rent from "./pages/Rent";
 import Services from "./pages/Services";
+import VehicleDetail from "./pages/VehicleDetail";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/dashboard" element={<ProtectedRoute><Dashboard /></ProtectedRoute>} />
             <Route path="/profile" element={<ProtectedRoute><ProfileEnhanced /></ProtectedRoute>} />
             <Route path="/marketplace" element={<Marketplace />} />
+            <Route path="/vehicle/:id" element={<VehicleDetail />} />
             <Route path="/about" element={<About />} />
             <Route path="/services" element={<Services />} />
             <Route path="/share" element={<ProtectedRoute><Share /></ProtectedRoute>} />

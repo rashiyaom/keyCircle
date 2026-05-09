@@ -2,19 +2,36 @@ import express from "express";
 import type { Express, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import helmet from "helmet";
+import rateLimit from "express-rate-limit";
 import { supabase } from "./config/supabase.js";
 import { errorHandler, sendSuccess } from "./utils/response.js";
 import { checkSchemaStatus, getTableStats, verifyConnection } from "./services/database.js";
 import authRouter from "./routes/auth.js";
 import usersRouter from "./routes/users.js";
+import vehicleRoutes from "./routes/vehicles.js";
+import bookingRoutes from "./routes/bookings.js";
 
 dotenv.config({ path: ".env.local" });
 
 const app: Express = express();
 const PORT = process.env.PORT || 5000;
 
-// Middleware
+// Security Middleware
+app.use(helmet());
 app.use(cors());
+
+// Rate Limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes)
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+  message: { success: false, error: { message: "Too many requests, please try again later." } }
+});
+app.use(limiter);
+
+// Body Parser Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -80,11 +97,10 @@ app.get("/api/v1/schema/verify", async (req, res: Response) => {
   res.status(result.success ? 200 : 400).json(result);
 });
 
-// Routes (to be added in later chunks)
+// Routes
 app.use("/api/v1/auth", authRouter);
-// app.use("/api/v1/vehicles", vehicleRoutes);
-// app.use("/api/v1/bookings", bookingRoutes);
-// app.use("/api/v1/users", userRoutes);
+app.use("/api/v1/vehicles", vehicleRoutes);
+app.use("/api/v1/bookings", bookingRoutes);
 app.use("/api/v1/users", usersRouter);
 
 // 404 handler
@@ -114,4 +130,14 @@ app.listen(PORT, () => {
   console.log(`  GET  /api/v1/users/:id       - Fetch a user profile`);
   console.log(`  POST /api/v1/users           - Create a user profile`);
   console.log(`  PUT  /api/v1/users/:id       - Update a user profile\n`);
+  console.log(`  GET  /api/v1/vehicles        - List vehicles`);
+  console.log(`  GET  /api/v1/vehicles/:id    - Get vehicle details`);
+  console.log(`  POST /api/v1/vehicles        - Create a vehicle`);
+  console.log(`  PUT  /api/v1/vehicles/:id    - Update a vehicle`);
+  console.log(`  DELETE /api/v1/vehicles/:id  - Delete a vehicle\n`);
+  console.log(`  GET  /api/v1/bookings        - List bookings`);
+  console.log(`  GET  /api/v1/bookings/:id    - Get booking details`);
+  console.log(`  POST /api/v1/bookings        - Create a booking`);
+  console.log(`  PUT  /api/v1/bookings/:id    - Update a booking`);
+  console.log(`  DELETE /api/v1/bookings/:id  - Delete a booking\n`);
 });

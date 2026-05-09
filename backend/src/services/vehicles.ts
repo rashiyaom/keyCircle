@@ -6,6 +6,8 @@ export interface VehicleFilters {
   available?: boolean;
   location?: string;
   search?: string;
+  limit?: number;
+  offset?: number;
 }
 
 export interface VehicleInput {
@@ -59,6 +61,10 @@ export async function listVehicles(filters: VehicleFilters): Promise<ApiResponse
     if (filters.search) {
       query = query.or(`name.ilike.%${filters.search}%,category.ilike.%${filters.search}%,location.ilike.%${filters.search}%`);
     }
+
+    const limit = filters.limit && filters.limit > 0 ? filters.limit : 20;
+    const offset = filters.offset && filters.offset >= 0 ? filters.offset : 0;
+    query = query.range(offset, offset + limit - 1);
 
     const { data, error } = await query;
 

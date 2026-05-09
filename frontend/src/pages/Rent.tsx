@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ArrowUpRight, MapPin, Search, Star, Shield, CheckCircle2, X, Calendar, Clock, User, Phone, Mail, AlertCircle } from "lucide-react";
 import Navigation from "@/components/Navigation";
 import Footer from "@/components/Footer";
+import { useAuth } from "@/contexts/AuthContext";
 
 interface Vehicle {
   id: number;
@@ -44,14 +45,36 @@ interface FormErrors {
   emergencyContact?: string;
 }
 
+const mockRentVehicles: Vehicle[] = [
+  {
+    id: 1, name: "Honda Activa", type: "scooty", image: "https://images.unsplash.com/photo-1580274455191-1c62238fa333?w=800&h=600&fit=crop",
+    pricePerHour: 50, ownerRating: 4.8, ownerName: "Rajesh Kumar", distance: "1.2 km", verified: true, location: "Bangalore",
+    specs: { fuel: "Petrol", seats: 2, transmission: "Automatic" },
+  },
+  {
+    id: 2, name: "Royal Enfield Classic", type: "bike", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800&h=600&fit=crop",
+    pricePerHour: 80, ownerRating: 4.6, ownerName: "Arjun Singh", distance: "2.5 km", verified: true, location: "Bangalore",
+    specs: { fuel: "Petrol", seats: 2, transmission: "Manual" },
+  },
+  {
+    id: 3, name: "Honda City", type: "car", image: "https://images.unsplash.com/photo-1550355291-bbee04a92027?w=800&h=600&fit=crop",
+    pricePerHour: 200, ownerRating: 4.9, ownerName: "Priya Sharma", distance: "3.0 km", verified: true, location: "Bangalore",
+    specs: { fuel: "Petrol", seats: 5, transmission: "Automatic" },
+  },
+  {
+    id: 4, name: "Firefox Cycle", type: "cycle", image: "https://images.unsplash.com/photo-1485965120184-e220f721d03e?w=800&h=600&fit=crop",
+    pricePerHour: 20, ownerRating: 4.4, ownerName: "Meena Devi", distance: "0.8 km", verified: false, location: "Bangalore",
+    specs: { fuel: "None", seats: 1, transmission: "Manual" },
+  },
+];
+
 const Rent = () => {
   const navigate = useNavigate();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const { isAuthenticated, user } = useAuth();
   const [searchLocation, setSearchLocation] = useState("");
   const [vehicleType, setVehicleType] = useState<string>("");
   const [selectedVehicle, setSelectedVehicle] = useState<Vehicle | null>(null);
   const [showBookingModal, setShowBookingModal] = useState(false);
-  const [currentUser, setCurrentUser] = useState<any>(null);
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [loading, setLoading] = useState(true);
   
@@ -69,69 +92,19 @@ const Rent = () => {
   const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Check authentication
+  // Load vehicles + pre-fill user data
   useEffect(() => {
-    const checkAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      setIsAuthenticated(!!session);
-      setCurrentUser(session?.user || null);
-      
-      // Pre-fill user data if authenticated
-      if (session?.user) {
-        setBookingForm(prev => ({
-          ...prev,
-          email: session.user.email || "",
-          fullName: session.user.user_metadata?.full_name || "",
-        }));
-      }
-    };
-    checkAuth();
-  }, []);
+    setVehicles(mockRentVehicles);
+    setLoading(false);
 
-  // Fetch vehicles from Supabase
-  useEffect(() => {
-    const fetchVehicles = async () => {
-      try {
-        setLoading(true);
-        const { data, error } = await supabase
-          .from('vehicles')
-          .select('*')
-          .eq('available', true);
-
-        if (error) {
-          console.error('Error fetching vehicles:', error);
-          return;
-        }
-
-        // Map database fields to UI format
-        const mappedVehicles: Vehicle[] = (data || []).map((vehicle: any) => ({
-          id: vehicle.id,
-          name: vehicle.name,
-          type: vehicle.type as "bike" | "scooty" | "cycle" | "car",
-          image: vehicle.image_url || vehicle.images?.[0] || "https://images.unsplash.com/photo-1560958089-b8a1929cea89?w=800&h=600&fit=crop",
-          pricePerHour: vehicle.price_per_hour,
-          ownerRating: vehicle.owner_rating || 4.5,
-          ownerName: vehicle.owner_name || "Owner",
-          distance: vehicle.distance || "N/A",
-          verified: vehicle.verified || false,
-          location: vehicle.location || "Bangalore",
-          specs: {
-            fuel: vehicle.fuel_type || "Petrol",
-            seats: vehicle.seats || 2,
-            transmission: vehicle.transmission || "Manual",
-          },
-        }));
-
-        setVehicles(mappedVehicles);
-      } catch (error) {
-        console.error('Error loading vehicles:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchVehicles();
-  }, []);
+    if (user) {
+      setBookingForm(prev => ({
+        ...prev,
+        email: user.email || "",
+        fullName: user.name || "",
+      }));
+    }
+  }, [user]);
 
   // Validation functions
   const validateEmail = (email: string): boolean => {
@@ -228,8 +201,8 @@ const Rent = () => {
       // Show success message (you can add a toast here)
       alert('Booking request sent successfully! Owner will contact you shortly.');
       setBookingForm({
-        fullName: currentUser?.user_metadata?.full_name || "",
-        email: currentUser?.email || "",
+        fullName: user?.name || "",
+        email: user?.email || "",
         phone: "",
         pickupDate: "",
         pickupTime: "",
@@ -451,12 +424,12 @@ const Rent = () => {
             {/* Booking Form */}
             <div className="p-6 space-y-6">
               {/* Authentication Status */}
-              {isAuthenticated && currentUser && (
+              {isAuthenticated && user && (
                 <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-center gap-3">
                   <CheckCircle2 className="w-5 h-5 text-green-600" />
                   <div>
                     <div className="text-sm font-medium text-green-900">Verified User</div>
-                    <div className="text-xs text-green-700">{currentUser.email}</div>
+                    <div className="text-xs text-green-700">{user.email}</div>
                   </div>
                 </div>
               )}
